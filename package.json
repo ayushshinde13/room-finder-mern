@@ -1,0 +1,44 @@
+{
+  "name": "room-finder-monorepo",
+  "version": "1.0.0",
+  "description": "Full-stack Room Finder application with React/Vite 7 frontend and Node.js/Express backend",
+  "main": "server/server.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
+    "dev:client": "cd client && npm run dev",
+    "dev:server": "cd server && npm run dev",
+    "start": "cross-env NODE_ENV=production node server/server.js",
+    "build": "cd client && npm run build",
+    "install:all": "npm install && cd client && npm install && cd .. && cd server && npm install",
+    "build:client": "cd client && npm run build",
+    "heroku-postbuild": "npm run build",
+    "clean-install": "rm -rf client/node_modules && rm -rf client/package-lock.json && cd client && npm install && cd ../server && npm install"
+  },
+  "keywords": [
+    "mern",
+    "react",
+    "vite",
+    "node",
+    "express",
+    "mongodb",
+    "room-finder",
+    "booking-system"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "concurrently": "^8.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-repo/room-finder.git"
+  },
+  "dependencies": {
+    "cross-env": "^10.1.0"
+  }
+}

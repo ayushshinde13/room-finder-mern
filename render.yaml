@@ -1,0 +1,25 @@
+services:
+  # Backend API service
+  - type: web
+    name: room-finder-api
+    env: node
+    region: frankfurt  # Change to your preferred region
+    buildCommand: |
+      cd server &&
+      npm install &&
+      cd ../client/room-finder &&
+      npm install &&
+      npm run build &&
+      cd ../../server &&
+      ls -la
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false  # Secret value that will be set in the Render dashboard
+      - key: JWT_SECRET
+        sync: false  # Secret value that will be set in the Render dashboard
+      - key: CLOUDINARY_URL
+        sync: false  # Optional, secret value that will be set in the Render dashboard
+    autoDeploy: false  # Recommended to disable auto-deploy for production apps

@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    @apply bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300;
+    font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+
+  /* Custom Scrollbars */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-300 dark:bg-slate-800 rounded-full hover:bg-slate-400 dark:hover:bg-slate-700 transition-colors;
+  }
+}
+
+/* Glassmorphism Panel */
+.glass-panel {
+  @apply bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-slate-200/50 dark:border-slate-800/50;
+}
+
+/* Accent Glows */
+.glow-emerald {
+  @apply relative;
+}
+.glow-emerald::after {
+  content: '';
+  @apply absolute -inset-1 rounded-2xl bg-emerald-500/10 blur-xl opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none;
+}
+
+/* Gradients */
+.bg-gradient-shimmer {
+  background: linear-gradient(120deg, var(--color-emerald-500) 0%, var(--color-teal-600) 100%);
+}
+
+.text-gradient-primary {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 to-teal-400 font-extrabold;
+}
+
+/* Dot Grid Background */
+.bg-grid-pattern {
+  background-size: 20px 20px;
+  background-image: radial-gradient(circle, var(--color-slate-200) 1px, transparent 1px);
+}
+.dark .bg-grid-pattern {
+  background-image: radial-gradient(circle, var(--color-slate-800) 1px, transparent 1px);
+}
+
