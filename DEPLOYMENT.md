@@ -5,7 +5,7 @@ This guide explains how to deploy the RoomFinder application to Vercel (frontend
 ## Architecture Overview
 
 The RoomFinder application is a full-stack MERN application with:
-- **Frontend**: React/Vite application in `client/room-finder`
+- **Frontend**: React/Vite application in `client`
 - **Backend**: Node.js/Express server in `server`
 - **Database**: MongoDB (Atlas or cloud instance)
 
@@ -52,7 +52,7 @@ If you prefer to host the frontend separately on Vercel:
 2. Click "New Project" and import your RoomFinder repository
 3. Configure the project:
    - **Framework Preset**: Vite
-   - **Root Directory**: `client/room-finder`
+   - **Root Directory**: `client`
    - **Build Command**: `npm run build`
    - **Output Directory**: `dist`
 4. Add Environment Variables if needed (typically not needed for frontend-only deployment)
@@ -60,7 +60,7 @@ If you prefer to host the frontend separately on Vercel:
 
 ### Important: Update API URLs when Frontend and Backend are Separate
 
-If you deploy frontend and backend separately, you need to update the API configuration in `client/room-finder/src/services/api.js`:
+If you deploy frontend and backend separately, you need to update the API configuration in `client/src/services/api.js`:
 
 ```javascript
 const API = axios.create({

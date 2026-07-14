@@ -7,10 +7,10 @@ services:
     buildCommand: |
       cd server &&
       npm install &&
-      cd ../client/room-finder &&
+      cd ../client &&
       npm install &&
       npm run build &&
-      cd ../../server &&
+      cd ../server &&
       ls -la
     startCommand: npm start
     envVars:

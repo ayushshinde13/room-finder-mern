@@ -5,27 +5,12 @@ This is a full-stack Room Finder application built with the MERN stack (MongoDB,
 ## Project Structure
 
 The project consists of two main parts:
-- **Frontend**: Located in `client/room-finder` (React + Vite 7 + Tailwind CSS) - THIS IS THE OFFICIAL FRONTEND
-- **Backend**: Located in `server` (Node.js + Express + MongoDB)
-
-⚠️ **IMPORTANT**: There is a placeholder directory at `client/` that exists only to redirect developers to the correct frontend location. The actual frontend code is exclusively in `client/room-finder`.
-
-🚨 **NOTE**: There is a redundant nested structure at `room-finder/client/room-finder` that contains outdated/duplicate code. This should be removed to avoid confusion.
-
-## Recommended Cleanup
-
-To completely clean up the project structure, consider removing the redundant directory:
-
-```bash
-rm -rf room-finder/
-```
-
-This will eliminate the duplicate/nested structure and leave you with the clean architecture:
+- **Frontend**: Located in `client/` (React + Vite 7 + Tailwind CSS)
+- **Backend**: Located in `server/` (Node.js + Express + MongoDB)
 
 ```
 d:\room-finder\
-├── client/
-│   ├── room-finder/     <- Official Frontend (Vite 7)
+├── client/              <- Frontend (Vite 7)
 ├── server/              <- Backend Server
 ├── package.json         <- Root package.json
 ├── DEPLOYMENT.md        <- Deployment guide
@@ -70,14 +55,14 @@ This application is configured for easy deployment to platforms like Heroku, Ren
    # Install root dependencies
    npm install
    
-   # Install frontend dependencies (Vite 7)
-   cd client/room-finder
-   npm install
-   
-   # Install backend dependencies
-   cd ../../server
-   npm install
-   ```
+    # Install frontend dependencies (Vite 7)
+    cd client
+    npm install
+    
+    # Install backend dependencies
+    cd ../server
+    npm install
+    ```
 
 3. Set up environment variables:
    Create a `.env` file in the `server` directory with the following:
@@ -97,7 +82,7 @@ This application is configured for easy deployment to platforms like Heroku, Ren
      npm run dev
      
      # Start frontend (Vite 7)
-     cd ../client/room-finder
+     cd ../client
      npm run dev
      ```
    

@@ -30,7 +30,7 @@ app.use(express.json());
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
   // Serve static files from the frontend build directory
-  app.use(express.static(path.join(__dirname, '../public')));
+  app.use(express.static(path.join(__dirname, 'public')));
 }
 
 // Routes
@@ -43,7 +43,7 @@ app.use("/api/payments", paymentRoutes); // Payments CRUD
 // In production, serve the index.html file for all non-API routes
 if (process.env.NODE_ENV === 'production') {
   app.get(/^(?!\/api)/, (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/index.html'));
+    res.sendFile(path.join(__dirname, 'public/index.html'));
   });
 }
 
