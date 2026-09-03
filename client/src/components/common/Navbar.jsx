@@ -49,9 +49,11 @@ const Navbar = () => {
           </button>
 
           <Link to="/" className="flex items-center gap-2 group">
-            <span className="p-2 bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-500 rounded-xl group-hover:scale-105 transition-transform duration-200">
-              <Sparkles size={20} className="fill-emerald-500/20" />
-            </span>
+            <img 
+              src="/logo.png" 
+              alt="RoomFinder Logo" 
+              className="w-10 h-10 group-hover:scale-105 transition-transform duration-200 drop-shadow-sm" 
+            />
             <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors duration-200">
               Room<span className="text-emerald-500 dark:text-emerald-400">Finder</span>
             </span>
