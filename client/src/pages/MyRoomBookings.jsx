@@ -1,31 +1,24 @@
 import { useEffect, useState } from "react";
 import useAuth from "../hooks/useAuth";
 import { motion } from "framer-motion";
-import { Calendar, MapPin, User, Mail, ShieldAlert, CheckCircle2, AlertCircle, Eye } from "lucide-react";
+import { Calendar, MapPin, User, Mail, ShieldAlert, Receipt, CheckCircle2 } from "lucide-react";
 import toast from "react-hot-toast";
+import API from "../services/api";
+import PaymentReceiptModal from "../components/payment/PaymentReceiptModal";
 
 const MyRoomBookings = () => {
   const { user, token } = useAuth();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [receiptBookingId, setReceiptBookingId] = useState(null);
 
   useEffect(() => {
     if (!token) return;
 
     const fetchBookings = async () => {
       try {
-        const response = await fetch('http://localhost:5001/api/bookings/owner', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setBookings(data);
-        } else {
-          toast.error('Failed to fetch booking requests');
-        }
+        const { data } = await API.get('/bookings/owner');
+        setBookings(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error('Error fetching booking requests:', error);
         toast.error('Error loading bookings');
@@ -93,7 +86,7 @@ const MyRoomBookings = () => {
               {/* Left Room Image */}
               <div className="md:w-1/3 aspect-[4/3] rounded-2xl overflow-hidden border border-slate-200/20 dark:border-slate-800/20">
                 <img
-                  src={booking.room?.imageUrl || "https://via.placeholder.com/400x300?text=Listing+Image"}
+                  src={booking.room?.imageUrl || "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=600&q=80"}
                   alt={booking.room?.title}
                   className="w-full h-full object-cover"
                 />
@@ -111,20 +104,22 @@ const MyRoomBookings = () => {
                       booking.status === 'PENDING' 
                         ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20' 
                         : booking.status === 'APPROVED'
-                          ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
-                          : 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20'
+                          ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20'
+                          : booking.status === 'BOOKED'
+                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                            : 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20'
                     }`}>
-                      {booking.status}
+                      {booking.status === 'APPROVED' ? 'APPROVED (UNPAID)' : booking.status === 'BOOKED' ? 'PAID & OCCUPIED' : booking.status}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
                     <MapPin size={14} className="text-slate-400" />
-                    <span>{booking.room?.location}</span>
+                    <span>{booking.room?.location} • {booking.room?.bhkType}</span>
                   </div>
 
                   <div className="text-base font-extrabold text-emerald-600 dark:text-emerald-400 pt-1">
-                    ₹{booking.room?.rent}/month
+                    ₹{booking.room?.rent?.toLocaleString("en-IN")}/month
                   </div>
                   
                   {/* Renter detail log box */}
@@ -138,9 +133,6 @@ const MyRoomBookings = () => {
                       <Mail size={13} className="text-slate-400" />
                       <span>{booking.renter?.email}</span>
                     </div>
-                    <div className="text-[9px] font-mono text-slate-400 dark:text-slate-500 pt-1 border-t border-slate-200/10">
-                      ID: {booking.renter?._id}
-                    </div>
                   </div>
                 </div>
 
@@ -150,11 +142,30 @@ const MyRoomBookings = () => {
                     <Calendar size={14} />
                     <span>Requested on {new Date(booking.createdAt).toLocaleDateString()}</span>
                   </div>
+
+                  {booking.status === 'BOOKED' && (
+                    <button
+                      onClick={() => setReceiptBookingId(booking._id)}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-600 text-white rounded-xl font-bold text-xs shadow-sm hover:bg-emerald-700 transition-colors"
+                    >
+                      <Receipt size={13} />
+                      <span>View Receipt</span>
+                    </button>
+                  )}
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
+      )}
+
+      {/* Payment Receipt Modal */}
+      {receiptBookingId && (
+        <PaymentReceiptModal
+          isOpen={Boolean(receiptBookingId)}
+          onClose={() => setReceiptBookingId(null)}
+          bookingId={receiptBookingId}
+        />
       )}
     </div>
   );

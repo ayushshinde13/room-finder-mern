@@ -33,6 +33,14 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0, // Reward coins for users
     },
+
+    resetPasswordToken: {
+      type: String,
+    },
+
+    resetPasswordExpire: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );

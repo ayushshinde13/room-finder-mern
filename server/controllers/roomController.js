@@ -35,7 +35,7 @@ export const createRoom = async (req, res) => {
  */
 export const getAllRooms = async (req, res) => {
   try {
-    const rooms = await Room.find().populate('owner', 'name email').sort({ createdAt: -1 });
+    const rooms = await Room.find().populate('owner', 'name email avatar').sort({ createdAt: -1 });
     res.json(rooms);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -47,7 +47,7 @@ export const getAllRooms = async (req, res) => {
  */
 export const getRoomById = async (req, res) => {
   try {
-    const room = await Room.findById(req.params.id).populate('owner', 'name email');
+    const room = await Room.findById(req.params.id).populate('owner', 'name email avatar');
     if (!room) {
       return res.status(404).json({ message: "Room not found" });
     }

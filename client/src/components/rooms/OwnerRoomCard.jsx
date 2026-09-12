@@ -5,7 +5,8 @@ import { MapPin, Edit3, Trash2, X, Bed, Maximize2, Sparkles } from "lucide-react
 const OwnerRoomCard = ({ room, onEdit, onDelete }) => {
   const [open, setOpen] = useState(false);
 
-  const handleDelete = () => {
+  const handleDelete = (e) => {
+    e.stopPropagation();
     if (onDelete) {
       onDelete(room._id);
     }
@@ -18,7 +19,8 @@ const OwnerRoomCard = ({ room, onEdit, onDelete }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
         whileHover={{ y: -6 }}
-        className="glass-panel rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-emerald-500/5 border border-slate-200/50 dark:border-slate-800/80 transition-all duration-300 flex flex-col h-full group"
+        onClick={() => setOpen(true)}
+        className="glass-panel rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-emerald-500/5 border border-slate-200/50 dark:border-slate-800/80 transition-all duration-300 flex flex-col h-full group cursor-pointer"
       >
         {/* Image Area */}
         <div className="relative overflow-hidden aspect-[4/3] w-full">
@@ -27,15 +29,6 @@ const OwnerRoomCard = ({ room, onEdit, onDelete }) => {
             alt={room.title}
             className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
-          
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-between p-4">
-            <button
-              onClick={() => setOpen(true)}
-              className="p-2.5 bg-white/95 dark:bg-slate-900/95 text-slate-800 dark:text-white rounded-xl shadow-lg hover:scale-110 transition-transform flex items-center justify-center"
-            >
-              <Maximize2 size={16} />
-            </button>
-          </div>
 
           {/* Status badge */}
           <div className="absolute top-3 right-3">
@@ -84,7 +77,10 @@ const OwnerRoomCard = ({ room, onEdit, onDelete }) => {
             {/* Owner Actions */}
             <div className="flex items-center gap-2 pt-2 border-t border-slate-200/20 dark:border-slate-800/20">
               <button
-                onClick={() => onEdit && onEdit(room._id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit && onEdit(room._id);
+                }}
                 className="flex-1 py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition-all flex items-center justify-center gap-1.5"
               >
                 <Edit3 size={13} />
@@ -110,36 +106,38 @@ const OwnerRoomCard = ({ room, onEdit, onDelete }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/90 dark:bg-black/95 flex items-center justify-center p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-40 bg-black/90 dark:bg-black/95 flex flex-col items-center justify-center pt-24 pb-8 px-4 sm:px-6 backdrop-blur-md overflow-y-auto"
             onClick={() => setOpen(false)}
           >
+            {/* Close button positioned below navbar */}
+            <button
+              onClick={() => setOpen(false)}
+              className="fixed top-24 right-6 z-50 p-2.5 bg-white/20 hover:bg-white/30 text-white rounded-full transition-all duration-200 backdrop-blur-md hover:scale-110 shadow-lg"
+              aria-label="Close Preview"
+            >
+              <X size={20} />
+            </button>
+
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="relative max-w-4xl w-full flex flex-col gap-4"
+              className="relative max-w-4xl w-full flex flex-col gap-4 my-auto"
               onClick={(e) => e.stopPropagation()}
             >
-              <button
-                onClick={() => setOpen(false)}
-                className="absolute -top-12 right-0 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors flex items-center justify-center"
-              >
-                <X size={20} />
-              </button>
-              
               <img
                 src={room.imageUrl || room.image}
                 alt={room.title}
-                className="w-full max-h-[70vh] object-contain rounded-2xl shadow-2xl border border-white/10"
+                className="w-full max-h-[55vh] object-contain rounded-2xl shadow-2xl border border-white/10"
               />
 
-              {/* Bottom glass metadata banner */}
-              <div className="glass-panel p-5 rounded-2xl border border-white/10 dark:border-white/5 text-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              {/* Bottom metadata banner */}
+              <div className="bg-slate-900/95 backdrop-blur-md p-5 rounded-2xl border border-slate-700/80 text-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-2xl">
                 <div>
-                  <h4 className="font-bold text-lg">{room.title}</h4>
+                  <h4 className="font-bold text-lg text-white">{room.title}</h4>
                   <div className="flex items-center gap-1.5 text-slate-300 text-xs mt-1">
-                    <MapPin size={14} className="text-emerald-500" />
+                    <MapPin size={14} className="text-emerald-400" />
                     <span>{room.location}</span>
                   </div>
                 </div>
@@ -147,9 +145,9 @@ const OwnerRoomCard = ({ room, onEdit, onDelete }) => {
                 <div className="flex items-center gap-6">
                   <div>
                     <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">BHK type</span>
-                    <span className="text-sm font-bold block mt-0.5">{room.bhkType || room.type}</span>
+                    <span className="text-sm font-bold block mt-0.5 text-white">{room.bhkType || room.type}</span>
                   </div>
-                  <div className="border-l border-white/10 pl-6">
+                  <div className="border-l border-slate-700/60 pl-6">
                     <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">Monthly rent</span>
                     <span className="text-base font-extrabold text-emerald-400 block mt-0.5">₹{room.rent || room.price}</span>
                   </div>

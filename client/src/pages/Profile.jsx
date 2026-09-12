@@ -1,10 +1,4 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
-import { motion, AnimatePresence } from "framer-motion";
-import API from "../services/api";
-import toast from "react-hot-toast";
-import OwnerRoomCard from "../components/rooms/OwnerRoomCard";
+import PaymentReceiptModal from "../components/payment/PaymentReceiptModal";
 import { 
   Coins, 
   Wallet, 
@@ -20,7 +14,14 @@ import {
   LogOut,
   X,
   Check,
-  Smile
+  Smile,
+  IndianRupee,
+  Receipt,
+  ArrowUpRight,
+  Building,
+  Calendar,
+  Copy,
+  Clock
 } from "lucide-react";
 
 const Profile = () => {
@@ -41,6 +42,17 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState("profile"); // profile, wallet, rooms (owner)
   const [avatarTab, setAvatarTab] = useState("people");
   const [previewAvatar, setPreviewAvatar] = useState(null);
+  
+  // Wallet & Payment stats
+  const [paymentsList, setPaymentsList] = useState([]);
+  const [totalEarnings, setTotalEarnings] = useState(0);
+  const [totalSpent, setTotalSpent] = useState(0);
+  const [totalRefunded, setTotalRefunded] = useState(0);
+  const [walletBalance, setWalletBalance] = useState(0);
+  const [walletLoading, setWalletLoading] = useState(false);
+  const [selectedReceiptBookingId, setSelectedReceiptBookingId] = useState(null);
+  const [copiedTxn, setCopiedTxn] = useState(null);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,8 +70,32 @@ const Profile = () => {
       if (user.role === "OWNER") {
         fetchOwnerRooms();
       }
+      fetchWalletData();
     }
   }, [user]);
+
+  const fetchWalletData = async () => {
+    if (!user) return;
+    try {
+      setWalletLoading(true);
+      if (user.role === "OWNER") {
+        const { data } = await API.get("/payments/owner");
+        setPaymentsList(data.payments || []);
+        setTotalEarnings(data.totalEarnings || 0);
+        setTotalRefunded(data.totalRefunded || 0);
+      } else {
+        const { data } = await API.get("/payments");
+        setPaymentsList(data.payments || []);
+        setTotalSpent(data.totalSpent || 0);
+        setTotalRefunded(data.totalRefunded || 0);
+        setWalletBalance(data.walletBalance || 0);
+      }
+    } catch (error) {
+      console.error("Error fetching wallet transactions:", error);
+    } finally {
+      setWalletLoading(false);
+    }
+  };
 
   const fetchOwnerRooms = async () => {
     if (!user || user.role !== "OWNER") return;
@@ -326,60 +362,84 @@ const Profile = () => {
             animate={{ opacity: 1, y: 0 }}
             className="grid grid-cols-1 lg:grid-cols-3 gap-8"
           >
-            {/* Settings Form */}
-            <div className="lg:col-span-2 glass-panel p-6 sm:p-8 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-sm space-y-6">
-              <div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <Settings size={18} className="text-emerald-500" />
-                  Account Details
-                </h3>
-                <p className="text-xs text-slate-500 mt-1">
-                  Update your contact details or password.
-                </p>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                      Your Name
-                    </label>
-                    <div className="relative">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 pointer-events-none">
-                        <UserIcon size={16} />
-                      </span>
-                      <input
-                        type="text"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-800/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-800 dark:text-white text-sm"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                      Email Address
-                    </label>
-                    <div className="relative">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 pointer-events-none">
-                        <Mail size={16} />
-                      </span>
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-800/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-800 dark:text-white text-sm"
-                      />
-                    </div>
-                  </div>
+            {/* Left Column: Account Details & Password Security */}
+            <div className="lg:col-span-2 space-y-8">
+              {/* Account Details Form */}
+              <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-sm space-y-6">
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <Settings size={18} className="text-emerald-500" />
+                    Account Details
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Update your public profile name and contact email.
+                  </p>
                 </div>
 
-                <div className="pt-4 border-t border-slate-200/50 dark:border-slate-800/50 space-y-4">
-                  <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">Change Password (optional)</h4>
-                  
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                        Your Name
+                      </label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 pointer-events-none">
+                          <UserIcon size={16} />
+                        </span>
+                        <input
+                          type="text"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleChange}
+                          className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-800/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-800 dark:text-white text-sm"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                        Email Address
+                      </label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 pointer-events-none">
+                          <Mail size={16} />
+                        </span>
+                        <input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleChange}
+                          className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-800/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-800 dark:text-white text-sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 flex justify-end">
+                    <button
+                      type="submit"
+                      className="px-6 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-xl text-xs transition-all shadow-md shadow-emerald-500/10 flex items-center gap-1.5"
+                    >
+                      Save Account Info
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              {/* Dedicated Password & Security Section */}
+              <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-sm space-y-6">
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <Lock size={18} className="text-emerald-500" />
+                    Password & Security
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Manage your credentials, change your password, or trigger a secure password reset.
+                  </p>
+                </div>
+
+                {/* Direct Change Password Form */}
+                <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
@@ -392,7 +452,7 @@ const Profile = () => {
                         <input
                           type="password"
                           name="newPassword"
-                          placeholder="••••••••"
+                          placeholder="At least 6 characters"
                           value={formData.newPassword}
                           onChange={handleChange}
                           className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-800/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-800 dark:text-white text-sm"
@@ -402,7 +462,7 @@ const Profile = () => {
 
                     <div className="space-y-1">
                       <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Confirm Password
+                        Confirm New Password
                       </label>
                       <div className="relative">
                         <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 pointer-events-none">
@@ -411,7 +471,7 @@ const Profile = () => {
                         <input
                           type="password"
                           name="confirmNewPassword"
-                          placeholder="••••••••"
+                          placeholder="Re-enter password"
                           value={formData.confirmNewPassword}
                           onChange={handleChange}
                           className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-800/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-800 dark:text-white text-sm"
@@ -419,21 +479,44 @@ const Profile = () => {
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="pt-4 flex justify-end">
-                  <button
-                    type="submit"
-                    className="px-6 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-xl text-xs transition-all shadow-md shadow-emerald-500/10 flex items-center gap-1.5"
-                  >
-                    Save Changes
-                  </button>
+                  <div className="pt-2 flex justify-end">
+                    <button
+                      type="submit"
+                      disabled={!formData.newPassword}
+                      className="px-6 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-xl text-xs transition-all shadow-md shadow-emerald-500/10 flex items-center gap-1.5 disabled:opacity-40"
+                    >
+                      Update Password
+                    </button>
+                  </div>
+                </form>
+
+                {/* Separate Forgot Password & Recovery Card */}
+                <div className="pt-6 border-t border-slate-200/50 dark:border-slate-800/50">
+                  <div className="p-4 sm:p-5 rounded-2xl bg-emerald-500/5 dark:bg-emerald-500/10 border border-emerald-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
+                        Need to reset your password via email?
+                      </span>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                        If you have forgotten your password or want to generate a secure reset link, you can use the account recovery workflow.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => navigate("/forgot-password")}
+                      className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white rounded-xl text-xs font-semibold whitespace-nowrap transition-all shadow-sm flex items-center justify-center gap-1.5"
+                    >
+                      <span>Forgot Password</span>
+                      <ArrowRight size={13} />
+                    </button>
+                  </div>
                 </div>
-              </form>
+              </div>
             </div>
 
-            {/* Danger Zone */}
-            <div className="glass-panel p-6 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-sm flex flex-col justify-between gap-6">
+            {/* Right Column: Danger Zone */}
+            <div className="glass-panel p-6 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-sm flex flex-col justify-between gap-6 h-fit">
               <div>
                 <h3 className="text-lg font-bold text-red-500 flex items-center gap-2">
                   <Trash2 size={18} />
@@ -464,49 +547,278 @@ const Profile = () => {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="max-w-xl mx-auto w-full"
+            className="space-y-8"
           >
-            {/* Coins / Wallet Card */}
-            <div className="glass-panel p-8 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-sm relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 dark:bg-emerald-500/20 rounded-full blur-2xl pointer-events-none" />
-              
-              <div className="flex items-center gap-4">
-                <span className="p-3.5 bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-500 rounded-2xl flex items-center justify-center">
-                  <Wallet size={24} />
-                </span>
-                <div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">Active Balance</h3>
-                  <p className="text-xs text-slate-500">Earn coins by completing booking agreements</p>
+            {/* Top Stat Cards Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {/* Card 1: Revenue / Earnings (For Owner) or Wallet Refund Balance (For Renter) */}
+              <div className="glass-panel p-6 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-sm relative overflow-hidden flex flex-col justify-between">
+                <div className="absolute top-0 right-0 w-28 h-28 bg-emerald-500/10 dark:bg-emerald-500/20 rounded-full blur-2xl pointer-events-none" />
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="p-3 bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center">
+                      <IndianRupee size={22} />
+                    </span>
+                    <div>
+                      <h4 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                        {user.role === "OWNER" ? "Total Wallet Revenue" : "Wallet Refund Balance"}
+                      </h4>
+                      <p className="text-[11px] text-slate-400">
+                        {user.role === "OWNER" ? "Earnings from tenant bookings & 30% vacate fees" : "70% vacate refunds returned to wallet"}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </div>
 
-              <div className="my-8 flex items-baseline gap-2">
-                <Coins size={36} className="text-emerald-500" />
-                <span className="text-4xl font-extrabold tracking-tight text-slate-950 dark:text-white">{coins}</span>
-                <span className="text-slate-500 dark:text-slate-400 text-sm font-semibold">Coins</span>
-              </div>
-
-              <div className="p-4 bg-slate-100/50 dark:bg-slate-900/50 border border-slate-200/30 dark:border-slate-800/30 rounded-2xl space-y-4">
-                <div>
-                  <span className="text-xs font-bold text-slate-800 dark:text-slate-200">Redeem Discount Voucher</span>
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-1">
-                    Exchange 10 coins for a ₹100 instant rental discount on bookings.
+                <div className="mt-6 flex items-baseline gap-2">
+                  <span className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
+                    ₹{(user.role === "OWNER" ? totalEarnings : totalRefunded).toLocaleString("en-IN")}
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                    {user.role === "OWNER" ? "+ Total Earnings" : "+ Refund Credits"}
                   </span>
                 </div>
-                
+              </div>
+
+              {/* Card 2: Transactions Count / Total Spent */}
+              <div className="glass-panel p-6 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-sm relative overflow-hidden flex flex-col justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="p-3 bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center">
+                    <Receipt size={22} />
+                  </span>
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                      {user.role === "OWNER" ? "Paid Leases / Bookings" : "Total Rent Paid"}
+                    </h4>
+                    <p className="text-[11px] text-slate-400">
+                      {user.role === "OWNER" ? "Verified rental contracts" : "Gross rent payments made"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex items-baseline gap-2">
+                  <span className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
+                    {user.role === "OWNER" ? paymentsList.length : `₹${totalSpent.toLocaleString("en-IN")}`}
+                  </span>
+                  <span className="text-xs text-slate-400 font-semibold">
+                    {user.role === "OWNER" ? "Contracts" : "Spent"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Card 3: RoomCoins Rewards */}
+              <div className="glass-panel p-6 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-sm relative overflow-hidden flex flex-col justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="p-3 bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 rounded-2xl flex items-center justify-center">
+                    <Coins size={22} />
+                  </span>
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                      Reward RoomCoins
+                    </h4>
+                    <p className="text-[11px] text-slate-400">Platform loyalty bonus</p>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex items-baseline gap-2">
+                  <span className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
+                    {coins}
+                  </span>
+                  <span className="text-xs text-slate-400 font-semibold">Coins</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Discount Voucher for Renters */}
+            {user.role === "RENTER" && (
+              <div className="glass-panel p-6 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <Sparkles size={16} className="text-amber-500" />
+                    <span>Redeem Discount Voucher</span>
+                  </h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Exchange 10 RoomCoins for a ₹100 instant rental discount on checkout.
+                  </p>
+                </div>
                 <button
                   onClick={applyDiscount}
                   disabled={discountApplied || coins < 10}
-                  className={`w-full py-3 rounded-xl text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1.5 ${
+                  className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1.5 shrink-0 ${
                     discountApplied || coins < 10
                       ? "bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed"
-                      : "bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md shadow-emerald-500/10"
+                      : "bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md shadow-emerald-500/10 cursor-pointer"
                   }`}
                 >
-                  <Sparkles size={14} className={discountApplied ? "text-slate-400" : "fill-white/20"} />
-                  {discountApplied ? "Discount Already Applied" : "Apply 10 Coins Voucher"}
+                  <Sparkles size={14} />
+                  <span>{discountApplied ? "Discount Applied" : "Apply 10 Coins Voucher"}</span>
                 </button>
               </div>
+            )}
+
+            {/* Transaction History Log Section */}
+            <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-sm space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                    <Receipt size={18} />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
+                      {user.role === "OWNER" ? "Received Rental Payment & Fee History" : "Payment History & Wallet Refunds"}
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      {user.role === "OWNER" 
+                        ? "Real-time log of rent deposits and 30% retention vacate settlements"
+                        : "Log of rental payments and 70% vacate refund deposits to your wallet"}
+                    </p>
+                  </div>
+                </div>
+
+                <span className="self-start sm:self-auto px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-full text-xs font-bold">
+                  {paymentsList.length} Total Records
+                </span>
+              </div>
+
+              {walletLoading ? (
+                <div className="py-12 flex flex-col items-center justify-center gap-3">
+                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-emerald-500" />
+                  <span className="text-xs text-slate-400">Loading wallet transaction logs...</span>
+                </div>
+              ) : paymentsList.length === 0 ? (
+                <div className="py-12 text-center space-y-3">
+                  <div className="w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto text-slate-400">
+                    <Wallet size={24} />
+                  </div>
+                  <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                    No Transactions Yet
+                  </h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+                    {user.role === "OWNER"
+                      ? "When renters book and pay for your listed properties, payment deposits and transaction receipts will automatically appear in your wallet."
+                      : "When you complete rent payments on approved bookings, your payment receipts and refund credits will appear here."}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {paymentsList.map((payment) => {
+                    const bookingId = payment.bookingId?._id || payment.bookingId;
+                    const isCopied = copiedTxn === payment.transactionId;
+                    const isRefund = payment.type === 'REFUND';
+                    const isRetention = payment.type === 'RETENTION_FEE';
+
+                    return (
+                      <motion.div
+                        key={payment._id}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-5 rounded-2xl bg-slate-50/70 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-emerald-500/30 transition-all"
+                      >
+                        {/* Left: Property & Tenant Details */}
+                        <div className="flex items-start gap-4">
+                          <div className="w-12 h-12 rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800 shrink-0 border border-slate-200/50 dark:border-slate-700/50">
+                            <img
+                              src={payment.roomId?.imageUrl || "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=600&q=80"}
+                              alt={payment.roomId?.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2">
+                              <h4 className="text-sm font-bold text-slate-900 dark:text-white leading-tight">
+                                {payment.roomId?.title || "Rental Property"}
+                              </h4>
+                              <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                                isRefund 
+                                  ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20'
+                                  : isRetention
+                                    ? 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20'
+                                    : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                              }`}>
+                                {isRefund ? "70% LEASE REFUND" : isRetention ? "30% VACATE RETENTION" : payment.paymentMethod || "ONLINE"}
+                              </span>
+                            </div>
+
+                            <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                              <Building size={12} />
+                              <span>{payment.roomId?.location || "Location"} • {payment.roomId?.bhkType || "Unit"}</span>
+                            </p>
+
+                            {/* Description if present */}
+                            {payment.description && (
+                              <p className="text-xs text-slate-500 dark:text-slate-400 italic">
+                                {payment.description}
+                              </p>
+                            )}
+
+                            {/* Tenant Info (Visible to Owner) */}
+                            {user.role === "OWNER" && payment.userId && (
+                              <p className="text-xs text-slate-600 dark:text-slate-300 font-medium pt-0.5">
+                                Tenant: <strong className="text-slate-800 dark:text-slate-200">{payment.userId.name}</strong> ({payment.userId.email})
+                              </p>
+                            )}
+
+                            {/* Timestamp & TXN */}
+                            <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-400 pt-1 font-mono">
+                              <span className="flex items-center gap-1 font-sans text-slate-400">
+                                <Clock size={12} />
+                                {new Date(payment.createdAt).toLocaleString("en-IN", {
+                                  dateStyle: "medium",
+                                  timeStyle: "short"
+                                })}
+                              </span>
+                              <span>•</span>
+                              <div className="flex items-center gap-1">
+                                <span>TXN: {payment.transactionId}</span>
+                                <button
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(payment.transactionId);
+                                    setCopiedTxn(payment.transactionId);
+                                    toast.success("Transaction ID copied!");
+                                    setTimeout(() => setCopiedTxn(null), 2000);
+                                  }}
+                                  className="p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded transition-colors"
+                                  title="Copy TXN ID"
+                                >
+                                  {isCopied ? <Check size={11} className="text-emerald-500" /> : <Copy size={11} />}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Right: Amount & Receipt Button */}
+                        <div className="flex md:flex-col items-center md:items-end justify-between md:justify-center gap-2 pt-3 md:pt-0 border-t md:border-t-0 border-slate-200/50 dark:border-slate-800/50 shrink-0">
+                          <div className="text-right">
+                            <span className={`text-lg font-black flex items-center gap-0.5 ${
+                              isRefund ? 'text-purple-600 dark:text-purple-400' : 'text-emerald-600 dark:text-emerald-400'
+                            }`}>
+                              {user.role === "OWNER" || isRefund ? "+" : ""}₹{payment.amount?.toLocaleString("en-IN")}
+                            </span>
+                            <span className={`text-[10px] font-bold uppercase block ${
+                              isRefund ? 'text-purple-600/80' : 'text-emerald-600/80'
+                            }`}>
+                              {isRefund ? "Refund Credited" : isRetention ? "Retained Fee" : "Completed • Received"}
+                            </span>
+                          </div>
+
+                          {bookingId && (
+                            <button
+                              onClick={() => setSelectedReceiptBookingId(bookingId)}
+                              className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1 cursor-pointer active:scale-95"
+                            >
+                              <Receipt size={12} />
+                              <span>View Receipt</span>
+                            </button>
+                          )}
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </motion.div>
         )}
@@ -565,7 +877,7 @@ const Profile = () => {
       <AnimatePresence>
         {showAvatarModal && (
           <div
-            className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center z-[120] p-4 pt-24 pb-12 overflow-y-auto"
             onClick={() => setShowAvatarModal(false)}
           >
             <motion.div
@@ -686,6 +998,15 @@ const Profile = () => {
           </div>
         )}
       </AnimatePresence>
+
+      {/* Payment Receipt Modal */}
+      {selectedReceiptBookingId && (
+        <PaymentReceiptModal
+          isOpen={Boolean(selectedReceiptBookingId)}
+          onClose={() => setSelectedReceiptBookingId(null)}
+          bookingId={selectedReceiptBookingId}
+        />
+      )}
     </div>
   );
 };

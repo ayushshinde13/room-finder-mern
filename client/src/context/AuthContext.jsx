@@ -4,11 +4,24 @@ import API from "../services/api";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(() => {
-    const userInfo = localStorage.getItem("userInfo");
-    return userInfo ? JSON.parse(userInfo).token : null;
+  const [user, setUser] = useState(() => {
+    try {
+      const userInfo = localStorage.getItem("userInfo");
+      return userInfo ? JSON.parse(userInfo).user : null;
+    } catch {
+      return null;
+    }
   });
+
+  const [token, setToken] = useState(() => {
+    try {
+      const userInfo = localStorage.getItem("userInfo");
+      return userInfo ? JSON.parse(userInfo).token : null;
+    } catch {
+      return null;
+    }
+  });
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -20,15 +33,20 @@ export const AuthProvider = ({ children }) => {
 
       try {
         const res = await API.get("/users/me");
-
         setUser(res.data);
+        
+        // Keep localStorage user up-to-date with latest server data
+        const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+        userInfo.user = res.data;
+        userInfo.token = token;
+        localStorage.setItem("userInfo", JSON.stringify(userInfo));
       } catch (err) {
-        console.error("Auth restore failed");
+        console.error("Auth restore failed:", err);
         localStorage.removeItem("userInfo");
         setUser(null);
         setToken(null);
       } finally {
-        setLoading(false); // 🔥 THIS WAS MISSING EARLIER
+        setLoading(false);
       }
     };
 
@@ -54,8 +72,8 @@ export const AuthProvider = ({ children }) => {
       const response = await API.put("/users/me", updatedData);
 
       // Update the user context and localStorage with the response
-      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      userInfo.user = {...userInfo.user, ...response.data};
+      const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+      userInfo.user = { ...(userInfo.user || {}), ...response.data };
       localStorage.setItem("userInfo", JSON.stringify(userInfo));
       setUser(response.data);
       return true;

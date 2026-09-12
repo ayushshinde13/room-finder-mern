@@ -49,11 +49,6 @@ const Navbar = () => {
           </button>
 
           <Link to="/" className="flex items-center gap-2 group">
-            <img 
-              src="/logo.png" 
-              alt="RoomFinder Logo" 
-              className="w-10 h-10 group-hover:scale-105 transition-transform duration-200 drop-shadow-sm" 
-            />
             <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors duration-200">
               Room<span className="text-emerald-500 dark:text-emerald-400">Finder</span>
             </span>
@@ -156,15 +151,6 @@ const NavLinks = ({ user, onLogout, closeMenu, isMobile }) => {
 
   return (
     <>
-      <Link to="/" onClick={closeMenu} className={linkClass}>
-        <HomeIcon size={16} />
-        <span>Home</span>
-      </Link>
-      <Link to="/about" onClick={closeMenu} className={linkClass}>
-        <Info size={16} />
-        <span>About</span>
-      </Link>
-
       {user ? (
         <>
           {user.role === "OWNER" && (
@@ -212,6 +198,14 @@ const NavLinks = ({ user, onLogout, closeMenu, isMobile }) => {
         </>
       ) : (
         <>
+          <Link to="/" onClick={closeMenu} className={linkClass}>
+            <HomeIcon size={16} />
+            <span>Home</span>
+          </Link>
+          <Link to="/about" onClick={closeMenu} className={linkClass}>
+            <Info size={16} />
+            <span>About</span>
+          </Link>
           <Link to="/login" onClick={closeMenu} className={linkClass}>
             <LogIn size={16} />
             <span>Login</span>

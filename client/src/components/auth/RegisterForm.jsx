@@ -19,7 +19,11 @@ const RegisterForm = () => {
     
     try {
       setLoading(true);
-      await API.post("/auth/register", form);
+      await API.post("/auth/register", {
+        ...form,
+        name: form.name.trim(),
+        email: form.email.trim().toLowerCase()
+      });
       toast.success("Registered successfully. Login now.");
       navigate("/login");
     } catch (err) {

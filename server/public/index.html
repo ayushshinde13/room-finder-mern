@@ -2,15 +2,25 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/png" href="/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>room-finder</title>
-    <script type="module" crossorigin src="/assets/index-BY8JVI8a.js"></script>
+    <title>Room Finder</title>
+    <script>
+      (function() {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      })();
+    </script>
+    <script type="module" crossorigin src="/assets/index-DVwvN6BU.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/react-vendor-Cgg2GOmP.js">
     <link rel="modulepreload" crossorigin href="/assets/router-vendor-B-NRPHZP.js">
-    <link rel="modulepreload" crossorigin href="/assets/ui-vendor-CE2A_uJ2.js">
+    <link rel="modulepreload" crossorigin href="/assets/ui-vendor-2EjnTxlt.js">
     <link rel="modulepreload" crossorigin href="/assets/utils-vendor-B9ygI19o.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-BzGA53QK.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-i8OC1-mG.css">
   </head>
   <body>
     <div id="root"></div>

@@ -4,16 +4,18 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import AddRoom from "./pages/AddRoom";
 import MyRooms from "./pages/MyRooms";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/common/ProtectedRoute";
-import MyBookings from "./pages/MyBookings"; // Import MyBookings page
-import BookingRequests from "./pages/BookingRequests"; // Import BookingRequests page
-import ExploreRooms from "./pages/ExploreRooms"; // Import ExploreRooms page
-import MyRoomBookings from "./pages/MyRoomBookings"; // Import MyRoomBookings page
-import EditRoom from "./pages/EditRoom"; // Import EditRoom page
+import MyBookings from "./pages/MyBookings";
+import BookingRequests from "./pages/BookingRequests";
+import ExploreRooms from "./pages/ExploreRooms";
+import MyRoomBookings from "./pages/MyRoomBookings";
+import EditRoom from "./pages/EditRoom";
 
 function App() {
   return (
@@ -23,7 +25,9 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/profile" element={<Profile/>} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/profile" element={<Profile />} />
 
         {/* OWNER ONLY */}
         <Route

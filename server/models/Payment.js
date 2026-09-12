@@ -7,6 +7,11 @@ const paymentSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    ownerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: false,
+    },
     roomId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Room",
@@ -33,6 +38,14 @@ const paymentSchema = new mongoose.Schema(
       type: String,
       enum: ["PENDING", "COMPLETED", "FAILED", "REFUNDED"],
       default: "PENDING",
+    },
+    type: {
+      type: String,
+      enum: ["RENT_PAYMENT", "REFUND", "RETENTION_FEE"],
+      default: "RENT_PAYMENT",
+    },
+    description: {
+      type: String,
     },
     transactionId: {
       type: String,
