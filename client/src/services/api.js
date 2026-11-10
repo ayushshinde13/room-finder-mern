@@ -1,17 +1,19 @@
 import axios from 'axios';
 
-// Helper function to resolve the API Base URL dynamically
+// Helper function to resolve the API Base URL dynamically and prevent double-slashes
 const getBaseURL = () => {
-  const envUrl = import.meta.env.VITE_API_BASE_URL;
-  if (envUrl) {
-    const cleanUrl = envUrl.replace(/\/$/, '');
-    return cleanUrl.endsWith('/api') ? cleanUrl : `${cleanUrl}/api`;
+  const envUrl = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://room-finder-mern.onrender.com' : '');
+  if (!envUrl) return '/api';
+  
+  let s = envUrl.trim().replace(/\/+$/, '');
+  if (!s.endsWith('/api')) {
+    s += '/api';
   }
-  // Production fallback to Render backend
-  if (import.meta.env.PROD) {
-    return 'https://room-finder-mern.onrender.com/api';
+  const [proto, rest] = s.split('://');
+  if (rest) {
+    return `${proto}://${rest.replace(/\/+/g, '/')}`;
   }
-  return '/api';
+  return s.replace(/\/+/g, '/');
 };
 
 // Create an axios instance

@@ -24,6 +24,12 @@ connectDB();
 const app = express();
 
 // Middleware
+app.use((req, res, next) => {
+  if (req.url && req.url.includes('//')) {
+    req.url = req.url.replace(/\/+/g, '/');
+  }
+  next();
+});
 app.use(cors());
 app.use(express.json());
 
