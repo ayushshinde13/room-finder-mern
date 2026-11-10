@@ -154,15 +154,24 @@ const NavLinks = ({ user, onLogout, closeMenu, pathname, isMobile }) => {
 
   return (
     <>
-      <Link to="/" onClick={closeMenu} className={getItemClass("/")}>
-        <HomeIcon size={16} strokeWidth={1.75} />
-        <span>Home</span>
-      </Link>
+      {!user && (
+        <>
+          <Link to="/" onClick={closeMenu} className={getItemClass("/")}>
+            <HomeIcon size={16} strokeWidth={1.75} />
+            <span>Home</span>
+          </Link>
 
-      <Link to="/about" onClick={closeMenu} className={getItemClass("/about")}>
-        <Info size={16} strokeWidth={1.75} />
-        <span>About</span>
-      </Link>
+          <Link to="/about" onClick={closeMenu} className={getItemClass("/about")}>
+            <Info size={16} strokeWidth={1.75} />
+            <span>About</span>
+          </Link>
+
+          <Link to="/explore" onClick={closeMenu} className={getItemClass("/explore")}>
+            <Compass size={16} strokeWidth={1.75} />
+            <span>Explore Rooms</span>
+          </Link>
+        </>
+      )}
 
       {user && user.role === "RENTER" && (
         <>
