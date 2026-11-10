@@ -128,34 +128,81 @@ const Home = () => {
               <span className="text-xs text-slate-400 font-mono">dashboard_preview.tsx</span>
             </div>
             
-            <div className="grid grid-cols-3 gap-4 mb-6">
-              <div className="p-4 bg-slate-100/50 dark:bg-slate-900/50 rounded-2xl border border-slate-200/30 dark:border-slate-800/30">
-                <span className="text-xs text-slate-500 dark:text-slate-400 block font-medium">Listings</span>
-                <span className="text-xl font-bold mt-1 block">432+</span>
+            {/* Top 3 Room Category Previews (Images with labels, no numbers) */}
+            <div className="grid grid-cols-3 gap-3 mb-5">
+              <div className="relative h-24 rounded-2xl overflow-hidden group border border-slate-200/40 dark:border-slate-800/60 shadow-sm">
+                <img
+                  src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80"
+                  alt="Studio Room"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent flex items-end p-2.5">
+                  <span className="text-[11px] font-semibold text-white drop-shadow-sm">Studio</span>
+                </div>
               </div>
-              <div className="p-4 bg-slate-100/50 dark:bg-slate-900/50 rounded-2xl border border-slate-200/30 dark:border-slate-800/30">
-                <span className="text-xs text-slate-500 dark:text-slate-400 block font-medium">Verified</span>
-                <span className="text-xl font-bold mt-1 block text-emerald-500">100%</span>
+              <div className="relative h-24 rounded-2xl overflow-hidden group border border-slate-200/40 dark:border-slate-800/60 shadow-sm">
+                <img
+                  src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400&q=80"
+                  alt="1 BHK Flat"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent flex items-end p-2.5">
+                  <span className="text-[11px] font-semibold text-white drop-shadow-sm">1 BHK Flat</span>
+                </div>
               </div>
-              <div className="p-4 bg-slate-100/50 dark:bg-slate-900/50 rounded-2xl border border-slate-200/30 dark:border-slate-800/30">
-                <span className="text-xs text-slate-500 dark:text-slate-400 block font-medium">Avg Rent</span>
-                <span className="text-xl font-bold mt-1 block">₹8.5k</span>
+              <div className="relative h-24 rounded-2xl overflow-hidden group border border-slate-200/40 dark:border-slate-800/60 shadow-sm">
+                <img
+                  src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=400&q=80"
+                  alt="Luxury Suite"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent flex items-end p-2.5">
+                  <span className="text-[11px] font-semibold text-white drop-shadow-sm">Luxury Suite</span>
+                </div>
               </div>
             </div>
 
+            {/* Room Listing Cards with Preview Images */}
             <div className="space-y-3">
-              <div className="h-24 bg-slate-100/30 dark:bg-slate-900/30 rounded-2xl border border-slate-200/20 dark:border-slate-800/20 p-3 flex gap-3 items-center">
-                <div className="w-20 h-full bg-slate-200 dark:bg-slate-800 rounded-xl animate-pulse" />
-                <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded-md w-3/4 animate-pulse" />
-                  <div className="h-3 bg-slate-200 dark:bg-slate-800 rounded-md w-1/2 animate-pulse" />
+              <div className="h-20 bg-slate-100/50 dark:bg-slate-900/50 rounded-2xl border border-slate-200/40 dark:border-slate-800/40 p-2.5 flex gap-3 items-center hover:border-emerald-500/30 transition-colors">
+                <img
+                  src="https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=300&q=80"
+                  alt="Furnished Studio"
+                  className="w-16 h-16 rounded-xl object-cover shrink-0"
+                />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <span className="text-xs font-semibold text-slate-800 dark:text-slate-100 truncate">
+                      Furnished Studio in Indiranagar
+                    </span>
+                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0">
+                      Verified
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                    Direct Owner • Zero Brokerage
+                  </p>
                 </div>
               </div>
-              <div className="h-24 bg-slate-100/30 dark:bg-slate-900/30 rounded-2xl border border-slate-200/20 dark:border-slate-800/20 p-3 flex gap-3 items-center">
-                <div className="w-20 h-full bg-slate-200 dark:bg-slate-800 rounded-xl animate-pulse" />
-                <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded-md w-3/5 animate-pulse" />
-                  <div className="h-3 bg-slate-200 dark:bg-slate-800 rounded-md w-1/3 animate-pulse" />
+
+              <div className="h-20 bg-slate-100/50 dark:bg-slate-900/50 rounded-2xl border border-slate-200/40 dark:border-slate-800/40 p-2.5 flex gap-3 items-center hover:border-emerald-500/30 transition-colors">
+                <img
+                  src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=300&q=80"
+                  alt="Spacious 2BHK"
+                  className="w-16 h-16 rounded-xl object-cover shrink-0"
+                />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <span className="text-xs font-semibold text-slate-800 dark:text-slate-100 truncate">
+                      Spacious 2BHK Apartment
+                    </span>
+                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0">
+                      Verified
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                    Koramangala • Ready to Move
+                  </p>
                 </div>
               </div>
             </div>
@@ -163,24 +210,24 @@ const Home = () => {
         </motion.div>
       </section>
 
-      {/* ================= STATS COUNTERS ================= */}
+      {/* ================= PLATFORM HIGHLIGHTS ================= */}
       <section className="max-w-7xl mx-auto px-6 mb-24 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 p-8 glass-panel rounded-3xl border border-slate-200/50 dark:border-slate-800/50 text-center">
           <div>
-            <span className="text-3xl font-extrabold text-slate-900 dark:text-white">1,200+</span>
-            <span className="text-xs text-slate-500 dark:text-slate-400 block mt-1 font-medium">Renters Housed</span>
+            <span className="text-lg md:text-xl font-bold text-slate-900 dark:text-white block">Trusted Community</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 block mt-1 font-medium">Renters & Roommates</span>
           </div>
           <div>
-            <span className="text-3xl font-extrabold text-slate-900 dark:text-white">450+</span>
-            <span className="text-xs text-slate-500 dark:text-slate-400 block mt-1 font-medium">Verified Property Owners</span>
+            <span className="text-lg md:text-xl font-bold text-slate-900 dark:text-white block">Verified Owners</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 block mt-1 font-medium">Direct Property Listings</span>
           </div>
           <div>
-            <span className="text-3xl font-extrabold text-slate-900 dark:text-white">₹0</span>
-            <span className="text-xs text-slate-500 dark:text-slate-400 block mt-1 font-medium">Brokerage/Middlemen Fees</span>
+            <span className="text-lg md:text-xl font-bold text-emerald-500 dark:text-emerald-400 block">Zero Brokerage</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 block mt-1 font-medium">No Hidden Middleman Fees</span>
           </div>
           <div>
-            <span className="text-3xl font-extrabold text-slate-900 dark:text-white">24/7</span>
-            <span className="text-xs text-slate-500 dark:text-slate-400 block mt-1 font-medium">Secure Payment Processing</span>
+            <span className="text-lg md:text-xl font-bold text-slate-900 dark:text-white block">Instant Booking</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 block mt-1 font-medium">Secure Digital Process</span>
           </div>
         </div>
       </section>
