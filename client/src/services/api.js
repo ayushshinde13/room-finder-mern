@@ -1,11 +1,16 @@
 import axios from 'axios';
 
+// Helper function to resolve the API Base URL dynamically
+const getBaseURL = () => {
+  const envUrl = import.meta.env.VITE_API_BASE_URL;
+  if (!envUrl) return '/api';
+  const cleanUrl = envUrl.replace(/\/$/, '');
+  return cleanUrl.endsWith('/api') ? cleanUrl : `${cleanUrl}/api`;
+};
+
 // Create an axios instance
 const API = axios.create({
-  // Use the REACT_APP_API_BASE_URL environment variable if available, otherwise default to production/api
-  baseURL: '/api',
-  
-  // Set credentials to include cookies in cross-origin requests if needed
+  baseURL: getBaseURL(),
   withCredentials: false
 });
 
