@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
   CreditCard,
@@ -10,7 +9,6 @@ import {
   CheckCircle2,
   Lock,
   ArrowRight,
-  Sparkles,
   Loader2,
   IndianRupee,
   Coins,
@@ -113,7 +111,7 @@ const PaymentModal = ({ isOpen, onClose, booking, room, onPaymentSuccess }) => {
       setProcessStep("Payment Confirmed & Verified!");
       setCompletedDetails(data);
       setPaymentCompleted(true);
-      toast.success("Simulated Payment Successful! Room is officially booked 🎉");
+      toast.success("Payment successful! Room booked.");
 
       if (onPaymentSuccess) {
         onPaymentSuccess(data);
@@ -134,519 +132,503 @@ const PaymentModal = ({ isOpen, onClose, booking, room, onPaymentSuccess }) => {
   };
 
   return (
-    <AnimatePresence>
-      <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 pt-24 pb-12 overflow-y-auto">
-        {/* Backdrop */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={() => !processing && onClose()}
-          className="fixed inset-0 bg-slate-950/75 backdrop-blur-md"
-        />
+    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 overflow-y-auto">
+      {/* Backdrop */}
+      <div
+        onClick={() => !processing && onClose()}
+        className="fixed inset-0 bg-black/60"
+      />
 
-        {/* Modal Window */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 15 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 15 }}
-          className="relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden z-10 my-auto"
-        >
-          {/* Header */}
-          <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/60">
-            <div className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
-                <IndianRupee size={20} />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="text-lg font-extrabold text-slate-900 dark:text-white">
-                    {paymentCompleted ? "Payment Invoice & Receipt" : "Book Room with Payment"}
-                  </h2>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                    TEST SANDBOX
-                  </span>
-                </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  {paymentCompleted
-                    ? "Official verification and reservation proof"
-                    : "Simulated sandbox payment enabled — no real money will be deducted"}
-                </p>
-              </div>
+      {/* Modal Window */}
+      <div className="relative w-full max-w-2xl bg-white dark:bg-[#111A2B] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-xl shadow-xl overflow-hidden z-10 my-auto max-h-[92vh] flex flex-col">
+        {/* Header */}
+        <div className="px-5 sm:px-6 py-4 border-b border-[#E3E8EE] dark:border-[#1F2A3D] flex items-center justify-between bg-[#F5F8FA] dark:bg-[#0B1220] shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-white dark:bg-[#111A2B] border border-[#E3E8EE] dark:border-[#1F2A3D] text-[#1D4ED8] flex items-center justify-center font-bold shrink-0">
+              <IndianRupee size={18} />
             </div>
-
-            {!processing && (
-              <button
-                onClick={onClose}
-                className="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                aria-label="Close"
-              >
-                <X size={18} />
-              </button>
-            )}
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="text-base sm:text-lg font-bold text-[#0F1B2D] dark:text-[#F1F5F9]">
+                  {paymentCompleted ? "Payment Confirmation" : "Confirm Booking & Payment"}
+                </h2>
+                <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-50 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300 border border-amber-200 dark:border-amber-900/60">
+                  SANDBOX
+                </span>
+              </div>
+              <p className="text-xs text-[#5B6B7F] dark:text-[#94A3B8]">
+                {paymentCompleted
+                  ? "Official booking receipt and contract record"
+                  : "Simulated sandbox payment — no real money will be charged"}
+              </p>
+            </div>
           </div>
 
-          {/* Completed State View */}
-          {paymentCompleted ? (
-            <div className="p-6 sm:p-8 space-y-6">
-              <div className="text-center space-y-3">
-                <div className="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-500 dark:bg-emerald-500/20 flex items-center justify-center mx-auto shadow-inner ring-8 ring-emerald-500/5">
-                  <CheckCircle2 size={36} className="animate-bounce" />
-                </div>
-                <h3 className="text-2xl font-black text-slate-900 dark:text-white">
-                  ₹{totalAmount.toLocaleString("en-IN")} Simulated & Confirmed
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
-                  Payment authorized via Sandbox Gateway. The room has been officially marked as <strong>BOOKED</strong>!
-                </p>
+          {!processing && (
+            <button
+              onClick={onClose}
+              className="p-1.5 rounded-lg text-[#5B6B7F] dark:text-[#94A3B8] hover:text-[#0F1B2D] dark:hover:text-[#F1F5F9] hover:bg-[#E3E8EE] dark:hover:bg-[#1F2A3D] transition-colors cursor-pointer"
+              aria-label="Close"
+            >
+              <X size={18} />
+            </button>
+          )}
+        </div>
+
+        {/* Completed State View */}
+        {paymentCompleted ? (
+          <div className="p-6 sm:p-8 space-y-6 overflow-y-auto">
+            <div className="text-center space-y-2">
+              <div className="w-14 h-14 rounded-full bg-[#DCFCE7] text-[#15803D] flex items-center justify-center mx-auto">
+                <CheckCircle2 size={32} />
               </div>
+              <h3 className="text-2xl font-bold text-[#0F1B2D] dark:text-[#F1F5F9]">
+                ₹{totalAmount.toLocaleString("en-IN")} Payment Confirmed
+              </h3>
+              <p className="text-xs text-[#5B6B7F] dark:text-[#94A3B8] max-w-sm mx-auto">
+                Payment authorized via Sandbox Gateway. The room is now officially <strong>BOOKED</strong>.
+              </p>
+            </div>
 
-              {/* Receipt Details Box */}
-              <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60 space-y-3.5 text-xs">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-200/50 dark:border-slate-700/50">
-                  <span className="text-slate-500">Transaction ID</span>
-                  <div className="flex items-center gap-1.5 font-mono font-bold text-slate-800 dark:text-slate-200">
-                    <span>{completedDetails?.transactionId || "TXN_789456123"}</span>
-                    <button
-                      onClick={() => copyTransactionId(completedDetails?.transactionId)}
-                      className="p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded transition-colors"
-                      title="Copy TXN ID"
-                    >
-                      {copiedTxn ? <Check size={12} className="text-emerald-500" /> : <Copy size={12} />}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500">Property</span>
-                  <span className="font-semibold text-slate-800 dark:text-slate-200 truncate max-w-[200px]">
-                    {targetRoom?.title}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500">Location</span>
-                  <span className="font-semibold text-slate-800 dark:text-slate-200">
-                    {targetRoom?.location}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500">Beneficiary Landlord</span>
-                  <span className="font-semibold text-emerald-600 dark:text-emerald-400">
-                    {(targetRoom?.owner || booking?.owner)?.name || "Verified Landlord"} {((targetRoom?.owner || booking?.owner)?.email) ? `(${(targetRoom?.owner || booking?.owner)?.email})` : ""}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500">Payment Status</span>
-                  <span className="font-bold text-emerald-600 dark:text-emerald-400 uppercase flex items-center gap-1">
-                    <CheckCircle2 size={13} /> COMPLETED (Sandbox Verified)
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between pt-2 border-t border-slate-200/50 dark:border-slate-700/50">
-                  <span className="text-slate-500">Reward Coins Earned</span>
-                  <span className="inline-flex items-center gap-1 font-bold text-amber-500">
-                    <Sparkles size={12} /> +50 RoomCoins
-                  </span>
+            {/* Receipt Details Box */}
+            <div className="p-4 sm:p-5 rounded-lg bg-[#F5F8FA] dark:bg-[#0B1220] border border-[#E3E8EE] dark:border-[#1F2A3D] space-y-2.5 text-xs">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 pb-2 border-b border-[#E3E8EE] dark:border-[#1F2A3D]">
+                <span className="text-[#5B6B7F] dark:text-[#94A3B8]">Transaction ID</span>
+                <div className="flex items-center gap-1.5 font-mono text-[#0F1B2D] dark:text-[#F1F5F9] break-all">
+                  <span>{completedDetails?.transactionId || "TXN_789456123"}</span>
+                  <button
+                    onClick={() => copyTransactionId(completedDetails?.transactionId)}
+                    className="p-1 hover:bg-[#E3E8EE] dark:hover:bg-[#1F2A3D] rounded transition-colors shrink-0 cursor-pointer"
+                    title="Copy TXN ID"
+                  >
+                    {copiedTxn ? <Check size={12} className="text-[#15803D]" /> : <Copy size={12} />}
+                  </button>
                 </div>
               </div>
 
-              <div className="pt-2">
-                <button
-                  onClick={onClose}
-                  className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-bold text-sm shadow-lg shadow-emerald-600/20 active:scale-[0.99] transition-all flex items-center justify-center gap-2"
-                >
-                  <Receipt size={16} />
-                  <span>Done & View My Bookings</span>
-                </button>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+                <span className="text-[#5B6B7F] dark:text-[#94A3B8]">Property</span>
+                <span className="font-medium text-[#0F1B2D] dark:text-[#F1F5F9] sm:text-right">
+                  {targetRoom?.title}
+                </span>
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+                <span className="text-[#5B6B7F] dark:text-[#94A3B8]">Location</span>
+                <span className="font-medium text-[#0F1B2D] dark:text-[#F1F5F9] sm:text-right">
+                  {targetRoom?.location}
+                </span>
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+                <span className="text-[#5B6B7F] dark:text-[#94A3B8]">Landlord</span>
+                <span className="font-medium text-[#0F1B2D] dark:text-[#F1F5F9] sm:text-right break-all">
+                  {(targetRoom?.owner || booking?.owner)?.name || "Landlord"} {((targetRoom?.owner || booking?.owner)?.email) ? `(${(targetRoom?.owner || booking?.owner)?.email})` : ""}
+                </span>
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+                <span className="text-[#5B6B7F] dark:text-[#94A3B8]">Payment Status</span>
+                <span className="font-semibold text-[#15803D] uppercase flex items-center gap-1 sm:justify-end">
+                  <CheckCircle2 size={13} /> COMPLETED
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between pt-2 border-t border-[#E3E8EE] dark:border-[#1F2A3D]">
+                <span className="text-[#5B6B7F] dark:text-[#94A3B8]">Loyalty Points Earned</span>
+                <span className="inline-flex items-center gap-1 font-semibold text-[#0F766E]">
+                  <Coins size={14} /> +50 RoomCoins
+                </span>
               </div>
             </div>
-          ) : (
-            /* Checkout Step */
-            <div className="p-6 sm:p-8 space-y-5">
-              {/* Room Card Brief */}
-              <div className="p-4 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/40 dark:border-emerald-800/40 flex items-center justify-between gap-4">
-                <div className="space-y-0.5">
-                  <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
-                    Selected Property
-                  </span>
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-white truncate max-w-[280px]">
-                    {targetRoom?.title}
-                  </h4>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    {targetRoom?.location} • {targetRoom?.bhkType}
+
+            <div className="pt-2">
+              <button
+                onClick={onClose}
+                className="w-full h-11 bg-[#1D4ED8] hover:bg-[#1E40AF] text-white rounded-lg font-medium text-sm transition-colors flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Receipt size={16} />
+                <span>Done & View My Bookings</span>
+              </button>
+            </div>
+          </div>
+        ) : (
+          /* Checkout Step */
+          <div className="p-5 sm:p-6 space-y-5 overflow-y-auto">
+            {/* Room Card Brief */}
+            <div className="p-4 rounded-lg bg-[#F5F8FA] dark:bg-[#0B1220] border border-[#E3E8EE] dark:border-[#1F2A3D] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="space-y-0.5">
+                <span className="text-[10px] font-semibold text-[#5B6B7F] dark:text-[#94A3B8] uppercase tracking-wider">
+                  Selected Property
+                </span>
+                <h4 className="text-sm font-semibold text-[#0F1B2D] dark:text-[#F1F5F9]">
+                  {targetRoom?.title}
+                </h4>
+                <p className="text-xs text-[#5B6B7F] dark:text-[#94A3B8]">
+                  {targetRoom?.location} • {targetRoom?.bhkType}
+                </p>
+                {(targetRoom?.owner || booking?.owner) && (
+                  <p className="text-[11px] text-[#5B6B7F] dark:text-[#94A3B8] pt-0.5 break-all">
+                    Landlord: {(targetRoom?.owner || booking?.owner)?.name} ({(targetRoom?.owner || booking?.owner)?.email})
                   </p>
-                  {(targetRoom?.owner || booking?.owner) && (
-                    <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold pt-0.5">
-                      Landlord / Payee: {(targetRoom?.owner || booking?.owner)?.name} ({(targetRoom?.owner || booking?.owner)?.email})
-                    </p>
-                  )}
+                )}
+              </div>
+              <div className="sm:text-right flex items-center justify-between sm:block border-t sm:border-t-0 pt-2 sm:pt-0 border-[#E3E8EE] dark:border-[#1F2A3D]">
+                <span className="text-[10px] font-medium text-[#5B6B7F] dark:text-[#94A3B8] uppercase block">Monthly Rent</span>
+                <span className="text-base font-bold text-[#0F1B2D] dark:text-[#F1F5F9]">
+                  ₹{baseRent.toLocaleString("en-IN")}
+                </span>
+              </div>
+            </div>
+
+            {/* Quick 1-Click Simulate Banner */}
+            <div className="p-4 rounded-lg bg-[#F5F8FA] dark:bg-[#0B1220] border border-[#E3E8EE] dark:border-[#1F2A3D] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-[#1D4ED8] text-white flex items-center justify-center shrink-0">
+                  <Zap size={16} />
                 </div>
-                <div className="text-right">
-                  <span className="text-[10px] font-medium text-slate-400 uppercase block">Monthly Rent</span>
-                  <span className="text-base font-extrabold text-slate-900 dark:text-white">
-                    ₹{baseRent.toLocaleString("en-IN")}
+                <div className="text-xs">
+                  <span className="font-semibold text-[#0F1B2D] dark:text-[#F1F5F9] block">
+                    Instant 1-Click Sandbox Payment
+                  </span>
+                  <span className="text-[#5B6B7F] dark:text-[#94A3B8] text-[11px]">
+                    Authorize test payment and confirm the booking immediately.
                   </span>
                 </div>
               </div>
 
-              {/* 1-Click Quick Simulate Banner */}
-              <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/10 via-emerald-500/10 to-teal-500/10 border border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-sm">
-                    <Zap size={18} className="fill-white" />
-                  </div>
-                  <div className="text-xs">
-                    <span className="font-bold text-slate-900 dark:text-white block">
-                      Instant 1-Click Sandbox Payment
+              <button
+                type="button"
+                disabled={processing}
+                onClick={() => executePayment("simulate")}
+                className="w-full sm:w-auto px-4 h-9 bg-[#1D4ED8] hover:bg-[#1E40AF] text-white rounded-lg text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 shrink-0 disabled:opacity-60 cursor-pointer"
+              >
+                <Zap size={14} />
+                <span>Simulate & Book (₹{totalAmount})</span>
+              </button>
+            </div>
+
+            {/* Payment Methods Navigation */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-semibold text-[#5B6B7F] dark:text-[#94A3B8] uppercase tracking-wider">
+                Payment Method (Sandbox Mode)
+              </label>
+              <div className="grid grid-cols-5 gap-2">
+                {[
+                  { id: "simulate", label: "Instant", icon: Zap },
+                  { id: "upi", label: "UPI", icon: QrCode },
+                  { id: "card", label: "Card", icon: CreditCard },
+                  { id: "netbanking", label: "NetBank", icon: Building2 },
+                  { id: "wallet", label: "Wallet", icon: Wallet }
+                ].map((tab) => {
+                  const Icon = tab.icon;
+                  const isActive = activeTab === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`p-2.5 rounded-lg border text-center transition-colors flex flex-col items-center justify-center gap-1 cursor-pointer ${
+                        isActive
+                          ? "bg-blue-50 dark:bg-blue-950/40 border-[#1D4ED8] text-[#1D4ED8] font-semibold"
+                          : "bg-white dark:bg-[#111A2B] border-[#E3E8EE] dark:border-[#1F2A3D] text-[#5B6B7F] dark:text-[#94A3B8] hover:bg-[#F5F8FA] dark:hover:bg-[#1F2A3D]"
+                      }`}
+                    >
+                      <Icon size={16} />
+                      <span className="text-[11px] truncate">{tab.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Tab Form Contents */}
+            <div className="p-4 rounded-lg bg-[#F5F8FA] dark:bg-[#0B1220] border border-[#E3E8EE] dark:border-[#1F2A3D] min-h-[140px] flex flex-col justify-center">
+              {/* 1. SIMULATE TAB */}
+              {activeTab === "simulate" && (
+                <div className="space-y-3 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-[#0F1B2D] dark:text-[#F1F5F9]">
+                      Simulation Scenario:
                     </span>
-                    <span className="text-slate-500 dark:text-slate-400 text-[11px]">
-                      Simulate full payment authorization and book the room immediately.
-                    </span>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  disabled={processing}
-                  onClick={() => executePayment("simulate")}
-                  className="px-4 py-2 bg-gradient-to-r from-amber-500 to-emerald-600 hover:from-amber-600 hover:to-emerald-700 text-white rounded-xl text-xs font-bold shadow-md shadow-amber-500/20 transition-all flex items-center justify-center gap-1.5 shrink-0 active:scale-95 disabled:opacity-60 cursor-pointer"
-                >
-                  <Zap size={14} className="fill-white" />
-                  <span>Simulate & Book (₹{totalAmount})</span>
-                </button>
-              </div>
-
-              {/* Payment Methods Navigation */}
-              <div className="space-y-2">
-                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  Payment Channels (All in Sandbox Mode)
-                </label>
-                <div className="grid grid-cols-5 gap-2">
-                  {[
-                    { id: "simulate", label: "⚡ Simulate", icon: Zap },
-                    { id: "upi", label: "UPI / QR", icon: QrCode },
-                    { id: "card", label: "Cards", icon: CreditCard },
-                    { id: "netbanking", label: "NetBanking", icon: Building2 },
-                    { id: "wallet", label: "Wallets", icon: Wallet }
-                  ].map((tab) => {
-                    const Icon = tab.icon;
-                    const isActive = activeTab === tab.id;
-                    return (
-                      <button
-                        key={tab.id}
-                        type="button"
-                        onClick={() => setActiveTab(tab.id)}
-                        className={`p-2.5 rounded-2xl border text-center transition-all flex flex-col items-center justify-center gap-1 ${
-                          isActive
-                            ? "bg-emerald-500/10 border-emerald-500 text-emerald-600 dark:text-emerald-400 font-bold shadow-sm"
-                            : "bg-slate-50 dark:bg-slate-800/40 border-slate-200/70 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/80"
-                        }`}
-                      >
-                        <Icon size={16} />
-                        <span className="text-[11px] truncate">{tab.label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Tab Form Contents */}
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/30 border border-slate-200/50 dark:border-slate-800/60 min-h-[140px] flex flex-col justify-center">
-                {/* 1. SIMULATE TAB */}
-                {activeTab === "simulate" && (
-                  <div className="space-y-3 text-xs">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-slate-800 dark:text-slate-200">
-                        Choose Simulation Scenario:
-                      </span>
-                      <span className="text-[10px] text-emerald-500 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-full">
-                        Sandbox Active
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setSimulateMode("instant")}
-                        className={`p-3 rounded-xl border text-left transition-all ${
-                          simulateMode === "instant"
-                            ? "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-semibold"
-                            : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400"
-                        }`}
-                      >
-                        <div className="flex items-center gap-1.5 font-bold mb-0.5">
-                          <Zap size={14} className="text-amber-500" />
-                          <span>Instant Approval</span>
-                        </div>
-                        <p className="text-[10px] opacity-80">Bypass gateway prompts and book immediately</p>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => setSimulateMode("otp")}
-                        className={`p-3 rounded-xl border text-left transition-all ${
-                          simulateMode === "otp"
-                            ? "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-semibold"
-                            : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400"
-                        }`}
-                      >
-                        <div className="flex items-center gap-1.5 font-bold mb-0.5">
-                          <KeyRound size={14} className="text-emerald-500" />
-                          <span>Mock 3D OTP</span>
-                        </div>
-                        <p className="text-[10px] opacity-80">Simulate bank SMS OTP code verification</p>
-                      </button>
-                    </div>
-
-                    {simulateMode === "otp" && (
-                      <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2">
-                        <div className="flex items-center justify-between text-[11px]">
-                          <span className="text-slate-500">Test OTP Sent to Phone:</span>
-                          <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                            {simulatedOtp}
-                          </span>
-                        </div>
-                        <input
-                          type="text"
-                          maxLength={6}
-                          value={enteredOtp}
-                          onChange={(e) => setEnteredOtp(e.target.value)}
-                          className="w-full text-center tracking-[0.4em] font-mono text-base font-bold py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-800 dark:text-white focus:outline-none"
-                        />
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* 2. UPI TAB */}
-                {activeTab === "upi" && (
-                  <div className="space-y-4">
-                    <div className="flex flex-col sm:flex-row items-center gap-4">
-                      {/* Simulated QR Code */}
-                      <div className="p-3 bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col items-center shrink-0">
-                        <div className="w-20 h-20 bg-slate-900 rounded-xl p-2 flex items-center justify-center relative overflow-hidden">
-                          <QrCode className="text-white w-full h-full" />
-                          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-400/30 to-transparent animate-pulse pointer-events-none" />
-                        </div>
-                        <span className="text-[9px] font-bold text-slate-500 mt-1">Test Sandbox QR</span>
-                      </div>
-
-                      <div className="w-full space-y-2">
-                        <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-300">
-                          Or Enter Virtual Payment Address (UPI ID)
-                        </label>
-                        <input
-                          type="text"
-                          value={upiId}
-                          onChange={(e) => setUpiId(e.target.value)}
-                          placeholder="e.g. yourname@oksbi"
-                          className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
-                        />
-                        <div className="flex flex-wrap gap-1.5 pt-1">
-                          {["@okhdfcbank", "@okaxis", "@paytm", "@ibl"].map((handle) => (
-                            <button
-                              key={handle}
-                              type="button"
-                              onClick={() => {
-                                const prefix = upiId.split("@")[0] || "user";
-                                setUpiId(`${prefix}${handle}`);
-                              }}
-                              className="px-2 py-0.5 rounded-lg bg-slate-200/60 dark:bg-slate-700/60 text-[10px] text-slate-600 dark:text-slate-300 hover:bg-emerald-500 hover:text-white transition-colors"
-                            >
-                              {handle}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* 3. CARD TAB */}
-                {activeTab === "card" && (
-                  <div className="space-y-3 text-xs">
-                    <div>
-                      <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">
-                        Test Card Number
-                      </label>
-                      <div className="relative">
-                        <CreditCard size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                        <input
-                          type="text"
-                          value={cardData.number}
-                          onChange={handleCardNumberChange}
-                          placeholder="4532 •••• •••• 8920"
-                          className="w-full pl-9 pr-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 font-mono"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">
-                          Expiry (MM/YY)
-                        </label>
-                        <input
-                          type="text"
-                          value={cardData.expiry}
-                          onChange={handleExpiryChange}
-                          placeholder="MM/YY"
-                          className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-white focus:outline-none font-mono"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">
-                          CVV / CVC
-                        </label>
-                        <input
-                          type="password"
-                          maxLength={4}
-                          value={cardData.cvv}
-                          onChange={(e) => setCardData({ ...cardData, cvv: e.target.value })}
-                          placeholder="•••"
-                          className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-white focus:outline-none font-mono"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* 4. NETBANKING TAB */}
-                {activeTab === "netbanking" && (
-                  <div className="space-y-3">
-                    <label className="block text-[10px] font-bold uppercase text-slate-400">
-                      Popular Simulated Banks
-                    </label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {["HDFC", "SBI", "ICICI", "Axis", "Kotak", "PNB"].map((bank) => (
-                        <button
-                          key={bank}
-                          type="button"
-                          onClick={() => setSelectedBank(bank)}
-                          className={`p-2 rounded-xl text-xs font-bold border transition-all ${
-                            selectedBank === bank
-                              ? "bg-emerald-500/10 border-emerald-500 text-emerald-600 dark:text-emerald-400"
-                              : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
-                          }`}
-                        >
-                          {bank} Bank
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* 5. WALLET TAB */}
-                {activeTab === "wallet" && (
-                  <div className="space-y-3">
-                    <label className="block text-[10px] font-bold uppercase text-slate-400">
-                      Select Simulated Digital Wallet
-                    </label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {["Paytm", "PhonePe", "Amazon Pay"].map((wallet) => (
-                        <button
-                          key={wallet}
-                          type="button"
-                          onClick={() => setSelectedWallet(wallet)}
-                          className={`p-3 rounded-xl text-xs font-bold border transition-all text-center ${
-                            selectedWallet === wallet
-                              ? "bg-emerald-500/10 border-emerald-500 text-emerald-600 dark:text-emerald-400"
-                              : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
-                          }`}
-                        >
-                          {wallet}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Reward Coin Discount Toggle */}
-              {userCoins > 0 && (
-                <div className="p-3 rounded-2xl bg-amber-500/5 dark:bg-amber-500/10 border border-amber-500/20 flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-xs text-amber-700 dark:text-amber-400">
-                    <Coins size={16} />
-                    <span>
-                      Redeem <strong>{Math.min(userCoins, 200)}</strong> RoomCoins for ₹{Math.min(userCoins, 200)} off
+                    <span className="text-[10px] text-[#15803D] font-semibold bg-[#DCFCE7] dark:bg-emerald-950/40 px-2 py-0.5 rounded">
+                      Sandbox Active
                     </span>
                   </div>
-                  <input
-                    type="checkbox"
-                    checked={useCoins}
-                    onChange={(e) => setUseCoins(e.target.checked)}
-                    className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer"
-                  />
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setSimulateMode("instant")}
+                      className={`p-3 rounded-lg border text-left transition-colors cursor-pointer ${
+                        simulateMode === "instant"
+                          ? "border-[#1D4ED8] bg-white dark:bg-[#111A2B] text-[#1D4ED8] font-semibold"
+                          : "border-[#E3E8EE] dark:border-[#1F2A3D] bg-white dark:bg-[#111A2B] text-[#5B6B7F] dark:text-[#94A3B8]"
+                      }`}
+                    >
+                      <div className="flex items-center gap-1.5 font-semibold mb-0.5">
+                        <Zap size={14} className="text-[#1D4ED8]" />
+                        <span>Instant Approval</span>
+                      </div>
+                      <p className="text-[10px] text-[#5B6B7F] dark:text-[#94A3B8]">Approve immediately without extra steps</p>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setSimulateMode("otp")}
+                      className={`p-3 rounded-lg border text-left transition-colors cursor-pointer ${
+                        simulateMode === "otp"
+                          ? "border-[#1D4ED8] bg-white dark:bg-[#111A2B] text-[#1D4ED8] font-semibold"
+                          : "border-[#E3E8EE] dark:border-[#1F2A3D] bg-white dark:bg-[#111A2B] text-[#5B6B7F] dark:text-[#94A3B8]"
+                      }`}
+                    >
+                      <div className="flex items-center gap-1.5 font-semibold mb-0.5">
+                        <KeyRound size={14} className="text-[#1D4ED8]" />
+                        <span>Mock 3D OTP</span>
+                      </div>
+                      <p className="text-[10px] text-[#5B6B7F] dark:text-[#94A3B8]">Simulate bank SMS OTP code verification</p>
+                    </button>
+                  </div>
+
+                  {simulateMode === "otp" && (
+                    <div className="p-3 bg-white dark:bg-[#111A2B] rounded-lg border border-[#E3E8EE] dark:border-[#1F2A3D] space-y-2">
+                      <div className="flex items-center justify-between text-[11px]">
+                        <span className="text-[#5B6B7F] dark:text-[#94A3B8]">Test OTP Code:</span>
+                        <span className="font-mono font-bold text-[#1D4ED8]">
+                          {simulatedOtp}
+                        </span>
+                      </div>
+                      <input
+                        type="text"
+                        maxLength={6}
+                        value={enteredOtp}
+                        onChange={(e) => setEnteredOtp(e.target.value)}
+                        className="w-full text-center tracking-[0.4em] font-mono text-base font-bold py-1.5 bg-[#F5F8FA] dark:bg-[#0B1220] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-lg text-[#0F1B2D] dark:text-[#F1F5F9] focus:outline-none focus:ring-2 focus:ring-[#1D4ED8]"
+                      />
+                    </div>
+                  )}
                 </div>
               )}
 
-              {/* Price Breakdown */}
-              <div className="space-y-1.5 text-xs pt-1 border-t border-slate-100 dark:border-slate-800">
-                <div className="flex justify-between text-slate-500 dark:text-slate-400">
-                  <span>First Month Rent</span>
-                  <span>₹{baseRent.toLocaleString("en-IN")}</span>
-                </div>
-                <div className="flex justify-between text-slate-500 dark:text-slate-400">
-                  <span>Platform Fee</span>
-                  <div className="flex items-center gap-1.5">
-                    <span className="line-through text-slate-400">₹{platformFee}</span>
-                    <span className="text-emerald-600 dark:text-emerald-400 font-bold">FREE (0)</span>
+              {/* 2. UPI TAB */}
+              {activeTab === "upi" && (
+                <div className="space-y-4">
+                  <div className="flex flex-col sm:flex-row items-center gap-4">
+                    {/* Simulated QR Code */}
+                    <div className="p-3 bg-white rounded-lg border border-[#E3E8EE] flex flex-col items-center shrink-0">
+                      <div className="w-16 h-16 bg-[#0F1B2D] rounded-md p-1.5 flex items-center justify-center">
+                        <QrCode className="text-white w-full h-full" />
+                      </div>
+                      <span className="text-[9px] font-medium text-[#5B6B7F] mt-1">Sandbox QR</span>
+                    </div>
+
+                    <div className="w-full space-y-1.5">
+                      <label className="block text-xs font-semibold text-[#5B6B7F] dark:text-[#94A3B8]">
+                        Enter UPI ID
+                      </label>
+                      <input
+                        type="text"
+                        value={upiId}
+                        onChange={(e) => setUpiId(e.target.value)}
+                        placeholder="e.g. yourname@okhdfcbank"
+                        className="w-full px-3 py-2 bg-white dark:bg-[#111A2B] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-lg text-xs text-[#0F1B2D] dark:text-[#F1F5F9] focus:outline-none focus:ring-2 focus:ring-[#1D4ED8]"
+                      />
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {["@okhdfcbank", "@okaxis", "@paytm", "@ibl"].map((handle) => (
+                          <button
+                            key={handle}
+                            type="button"
+                            onClick={() => {
+                              const prefix = upiId.split("@")[0] || "user";
+                              setUpiId(`${prefix}${handle}`);
+                            }}
+                            className="px-2 py-0.5 rounded bg-white dark:bg-[#111A2B] border border-[#E3E8EE] dark:border-[#1F2A3D] text-[10px] text-[#5B6B7F] dark:text-[#94A3B8] hover:text-[#1D4ED8] transition-colors cursor-pointer"
+                          >
+                            {handle}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
-                {useCoins && coinDiscount > 0 && (
-                  <div className="flex justify-between text-amber-600 dark:text-amber-400 font-medium">
-                    <span>Coin Discount</span>
-                    <span>-₹{coinDiscount}</span>
+              )}
+
+              {/* 3. CARD TAB */}
+              {activeTab === "card" && (
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="block text-[10px] font-semibold uppercase text-[#5B6B7F] dark:text-[#94A3B8] mb-1">
+                      Test Card Number
+                    </label>
+                    <div className="relative">
+                      <CreditCard size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#5B6B7F] dark:text-[#94A3B8]" />
+                      <input
+                        type="text"
+                        value={cardData.number}
+                        onChange={handleCardNumberChange}
+                        placeholder="4532 •••• •••• 8920"
+                        className="w-full pl-9 pr-3 py-2 bg-white dark:bg-[#111A2B] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-lg text-[#0F1B2D] dark:text-[#F1F5F9] focus:outline-none focus:ring-2 focus:ring-[#1D4ED8] font-mono text-xs"
+                      />
+                    </div>
                   </div>
-                )}
-                <div className="flex justify-between text-sm font-extrabold text-slate-900 dark:text-white pt-1.5 border-t border-slate-200/60 dark:border-slate-800/60">
-                  <span>Total Amount</span>
-                  <span className="text-emerald-600 dark:text-emerald-400 text-base">
-                    ₹{totalAmount.toLocaleString("en-IN")}
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[10px] font-semibold uppercase text-[#5B6B7F] dark:text-[#94A3B8] mb-1">
+                        Expiry (MM/YY)
+                      </label>
+                      <input
+                        type="text"
+                        value={cardData.expiry}
+                        onChange={handleExpiryChange}
+                        placeholder="MM/YY"
+                        className="w-full px-3 py-2 bg-white dark:bg-[#111A2B] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-lg text-[#0F1B2D] dark:text-[#F1F5F9] focus:outline-none font-mono text-xs"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-semibold uppercase text-[#5B6B7F] dark:text-[#94A3B8] mb-1">
+                        CVV / CVC
+                      </label>
+                      <input
+                        type="password"
+                        maxLength={4}
+                        value={cardData.cvv}
+                        onChange={(e) => setCardData({ ...cardData, cvv: e.target.value })}
+                        placeholder="•••"
+                        className="w-full px-3 py-2 bg-white dark:bg-[#111A2B] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-lg text-[#0F1B2D] dark:text-[#F1F5F9] focus:outline-none font-mono text-xs"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* 4. NETBANKING TAB */}
+              {activeTab === "netbanking" && (
+                <div className="space-y-2">
+                  <label className="block text-[10px] font-semibold uppercase text-[#5B6B7F] dark:text-[#94A3B8]">
+                    Select Bank
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {["HDFC", "SBI", "ICICI", "Axis", "Kotak", "PNB"].map((bank) => (
+                      <button
+                        key={bank}
+                        type="button"
+                        onClick={() => setSelectedBank(bank)}
+                        className={`p-2 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
+                          selectedBank === bank
+                            ? "bg-blue-50 dark:bg-blue-950/40 border-[#1D4ED8] text-[#1D4ED8]"
+                            : "bg-white dark:bg-[#111A2B] border-[#E3E8EE] dark:border-[#1F2A3D] text-[#0F1B2D] dark:text-[#F1F5F9]"
+                        }`}
+                      >
+                        {bank} Bank
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* 5. WALLET TAB */}
+              {activeTab === "wallet" && (
+                <div className="space-y-2">
+                  <label className="block text-[10px] font-semibold uppercase text-[#5B6B7F] dark:text-[#94A3B8]">
+                    Select Digital Wallet
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {["Paytm", "PhonePe", "Amazon Pay"].map((wallet) => (
+                      <button
+                        key={wallet}
+                        type="button"
+                        onClick={() => setSelectedWallet(wallet)}
+                        className={`p-2.5 rounded-lg text-xs font-medium border transition-colors text-center cursor-pointer ${
+                          selectedWallet === wallet
+                            ? "bg-blue-50 dark:bg-blue-950/40 border-[#1D4ED8] text-[#1D4ED8]"
+                            : "bg-white dark:bg-[#111A2B] border-[#E3E8EE] dark:border-[#1F2A3D] text-[#0F1B2D] dark:text-[#F1F5F9]"
+                        }`}
+                      >
+                        {wallet}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Reward Coin Discount Toggle */}
+            {userCoins > 0 && (
+              <div className="p-3 rounded-lg bg-[#F5F8FA] dark:bg-[#0B1220] border border-[#E3E8EE] dark:border-[#1F2A3D] flex items-center justify-between">
+                <div className="flex items-center gap-2 text-xs text-[#0F766E] dark:text-[#14B8A6]">
+                  <Coins size={16} />
+                  <span>
+                    Redeem <strong>{Math.min(userCoins, 200)}</strong> RoomCoins for ₹{Math.min(userCoins, 200)} off
                   </span>
                 </div>
+                <input
+                  type="checkbox"
+                  checked={useCoins}
+                  onChange={(e) => setUseCoins(e.target.checked)}
+                  className="w-4 h-4 rounded text-[#1D4ED8] focus:ring-[#1D4ED8] cursor-pointer"
+                />
               </div>
+            )}
 
-              {/* Checkout Action Button */}
-              <div className="space-y-2 pt-1">
-                <button
-                  type="button"
-                  disabled={processing}
-                  onClick={() => executePayment()}
-                  className="w-full py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-2xl font-bold text-sm shadow-lg shadow-emerald-600/25 active:scale-[0.99] transition-all flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer"
-                >
-                  {processing ? (
-                    <>
-                      <Loader2 size={16} className="animate-spin" />
-                      <span>{processStep || "Simulating Payment..."}</span>
-                    </>
-                  ) : (
-                    <>
-                      <Lock size={16} />
-                      <span>Simulate Pay ₹{totalAmount.toLocaleString("en-IN")} & Book Room</span>
-                      <ArrowRight size={16} />
-                    </>
-                  )}
-                </button>
-
-                <div className="flex items-center justify-center gap-3 text-[10px] text-slate-400">
-                  <span className="flex items-center gap-1 text-emerald-500 font-semibold">
-                    <ShieldCheck size={12} /> Sandbox Mode
-                  </span>
-                  <span>•</span>
-                  <span>No Real Money Deducted</span>
-                  <span>•</span>
-                  <span>Immediate Room Booking</span>
+            {/* Price Breakdown */}
+            <div className="space-y-1.5 text-xs pt-1 border-t border-[#E3E8EE] dark:border-[#1F2A3D]">
+              <div className="flex justify-between text-[#5B6B7F] dark:text-[#94A3B8]">
+                <span>First Month Rent</span>
+                <span>₹{baseRent.toLocaleString("en-IN")}</span>
+              </div>
+              <div className="flex justify-between text-[#5B6B7F] dark:text-[#94A3B8]">
+                <span>Brokerage / Platform Fee</span>
+                <span className="text-[#15803D] font-medium">₹0 (Zero Brokerage)</span>
+              </div>
+              {useCoins && coinDiscount > 0 && (
+                <div className="flex justify-between text-[#0F766E] font-medium">
+                  <span>Coins Discount</span>
+                  <span>-₹{coinDiscount}</span>
                 </div>
+              )}
+              <div className="flex justify-between text-sm font-bold text-[#0F1B2D] dark:text-[#F1F5F9] pt-1.5 border-t border-[#E3E8EE] dark:border-[#1F2A3D]">
+                <span>Total Amount</span>
+                <span className="text-base text-[#1D4ED8]">
+                  ₹{totalAmount.toLocaleString("en-IN")}
+                </span>
               </div>
             </div>
-          )}
-        </motion.div>
+
+            {/* Checkout Action Button */}
+            <div className="space-y-2 pt-1">
+              <button
+                type="button"
+                disabled={processing}
+                onClick={() => executePayment()}
+                className="w-full h-11 bg-[#1D4ED8] hover:bg-[#1E40AF] text-white rounded-lg font-semibold text-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer"
+              >
+                {processing ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                    <span>{processStep || "Simulating Payment..."}</span>
+                  </>
+                ) : (
+                  <>
+                    <Lock size={16} />
+                    <span>Pay ₹{totalAmount.toLocaleString("en-IN")} & Complete Booking</span>
+                    <ArrowRight size={16} />
+                  </>
+                )}
+              </button>
+
+              <div className="flex items-center justify-center gap-2 text-[11px] text-[#5B6B7F] dark:text-[#94A3B8]">
+                <span className="flex items-center gap-1 text-[#15803D] font-medium">
+                  <ShieldCheck size={13} /> Sandbox Test Gateway
+                </span>
+                <span>•</span>
+                <span>No Actual Money Charged</span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-    </AnimatePresence>
+    </div>
   );
 };
 

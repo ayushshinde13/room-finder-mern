@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import useAuth from "../hooks/useAuth";
-import { motion } from "framer-motion";
 import {
   Calendar,
   MapPin,
@@ -8,11 +7,9 @@ import {
   Mail,
   ShieldAlert,
   CheckCircle2,
-  XCircle,
-  CreditCard,
   Receipt,
   AlertCircle,
-  Sparkles,
+  CreditCard,
   Lock
 } from "lucide-react";
 import toast from "react-hot-toast";
@@ -20,6 +17,7 @@ import API from "../services/api";
 import PaymentModal from "../components/payment/PaymentModal";
 import PaymentReceiptModal from "../components/payment/PaymentReceiptModal";
 import LeaveRoomModal from "../components/common/LeaveRoomModal";
+import Badge from "../components/ui/Badge";
 
 const MyBookings = () => {
   const { user, token } = useAuth();
@@ -33,11 +31,15 @@ const MyBookings = () => {
 
   const fetchBookings = async () => {
     try {
-      const { data } = await API.get('/bookings/my');
-      setBookings(Array.isArray(data) ? data.filter(b => b.status !== 'REJECTED' && b.status !== 'CANCELLED') : []);
+      const { data } = await API.get("/bookings/my");
+      setBookings(
+        Array.isArray(data)
+          ? data.filter((b) => b.status !== "REJECTED" && b.status !== "CANCELLED")
+          : []
+      );
     } catch (error) {
-      console.error('Error fetching bookings:', error);
-      toast.error('Error loading bookings');
+      console.error("Error fetching bookings:", error);
+      toast.error("Error loading bookings");
     } finally {
       setLoading(false);
     }
@@ -49,22 +51,21 @@ const MyBookings = () => {
   }, [token]);
 
   const cancelBooking = async (bookingId) => {
-    if (!window.confirm('Are you sure you want to cancel this booking request?')) {
+    if (!window.confirm("Are you sure you want to cancel this booking request?")) {
       return;
     }
 
     try {
-      await API.put(`/bookings/${bookingId}`, { status: 'CANCELLED' });
-      setBookings(bookings.filter(booking => booking._id !== bookingId));
-      toast.success('Booking request cancelled and removed');
+      await API.put(`/bookings/${bookingId}`, { status: "CANCELLED" });
+      setBookings(bookings.filter((booking) => booking._id !== bookingId));
+      toast.success("Booking request cancelled");
     } catch (error) {
-      console.error('Error cancelling booking:', error);
-      toast.error(error.response?.data?.message || 'An error occurred while cancelling');
+      toast.error(error.response?.data?.message || "An error occurred while cancelling");
     }
   };
 
   const handleLeaveSuccess = (updatedBooking) => {
-    setBookings(bookings.map(b => b._id === updatedBooking._id ? updatedBooking : b));
+    setBookings(bookings.map((b) => (b._id === updatedBooking._id ? updatedBooking : b)));
   };
 
   const handlePaymentSuccess = () => {
@@ -73,17 +74,17 @@ const MyBookings = () => {
 
   if (loading) {
     return (
-      <div className="min-h-[70vh] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-emerald-500" />
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#1D4ED8] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
-  if (!user || user.role !== 'RENTER') {
+  if (!user || user.role !== "RENTER") {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="text-center text-red-500 font-bold flex items-center gap-2">
-          <ShieldAlert size={20} />
+      <div className="min-h-[50vh] flex items-center justify-center">
+        <div className="text-center text-[#B91C1C] font-semibold flex items-center gap-2">
+          <ShieldAlert size={18} />
           <span>Access denied. Renters only.</span>
         </div>
       </div>
@@ -91,216 +92,200 @@ const MyBookings = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-          My Bookings
+    <div className="max-w-4xl mx-auto space-y-8 py-4 sm:py-6 text-left">
+      <div className="space-y-1">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0F1B2D] dark:text-[#F1F5F9]">
+          My Bookings & Contracts
         </h1>
-        <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
-          Review status of your rental contracts, complete payments, vacate rooms, and download receipts.
+        <p className="text-xs sm:text-sm text-[#5B6B7F] dark:text-[#94A3B8]">
+          Review your rental requests, complete payments, vacate units, and download tax invoices.
         </p>
       </div>
 
       {bookings.length === 0 ? (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center py-16 glass-panel rounded-3xl border border-slate-200/50 dark:border-slate-800/50"
-        >
-          <Calendar className="w-12 h-12 text-slate-300 dark:text-slate-700 mx-auto mb-4" />
-          <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200">
-            No Active Bookings
+        <div className="text-center py-16 bg-white dark:bg-[#111A2B] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-xl space-y-3">
+          <Calendar className="w-10 h-10 text-[#5B6B7F] dark:text-[#94A3B8] mx-auto" strokeWidth={1.5} />
+          <h3 className="text-base font-bold text-[#0F1B2D] dark:text-[#F1F5F9]">
+            No active bookings found
           </h3>
-          <p className="text-slate-500 dark:text-slate-400 text-sm mt-2 max-w-sm mx-auto">
-            You haven't requested to book any rooms yet. Explore listings to make a booking.
+          <p className="text-xs text-[#5B6B7F] dark:text-[#94A3B8] max-w-sm mx-auto leading-relaxed">
+            You haven't requested to book any rooms yet. Browse available listings to enquire.
           </p>
-        </motion.div>
+        </div>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-5">
           {bookings.map((booking) => {
-            const rent = booking.room?.rent || 0;
+            const rent = Number(booking.room?.rent || 0);
             const refundEst = booking.refundAmount || Math.round(rent * 0.7);
             const deductionEst = booking.deductionAmount || Math.round(rent * 0.3);
 
             return (
-              <motion.div
+              <div
                 key={booking._id}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="glass-panel p-6 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-sm flex flex-col md:flex-row gap-6"
+                className="bg-white dark:bg-[#111A2B] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-xl p-4 sm:p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)] flex flex-col md:flex-row gap-5"
               >
                 {/* Left Room Image */}
-                <div className="md:w-1/3 aspect-[4/3] rounded-2xl overflow-hidden border border-slate-200/20 dark:border-slate-800/20">
+                <div className="md:w-1/3 aspect-[16/10] sm:aspect-[4/3] rounded-lg overflow-hidden border border-[#E3E8EE] dark:border-[#1F2A3D] shrink-0 bg-[#F5F8FA] dark:bg-[#0B1220]">
                   <img
-                    src={booking.room?.imageUrl || "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=600&q=80"}
+                    src={
+                      booking.room?.imageUrl ||
+                      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=600&q=80"
+                    }
                     alt={booking.room?.title}
                     className="w-full h-full object-cover"
                   />
                 </div>
 
-                {/* Right Booking Details */}
-                <div className="md:w-2/3 flex flex-col justify-between">
-                  <div className="space-y-3">
+                {/* Right Details */}
+                <div className="md:w-2/3 flex flex-col justify-between space-y-3">
+                  <div className="space-y-2.5">
                     <div className="flex flex-wrap items-center justify-between gap-2">
-                      <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">
+                      <h3 className="text-base sm:text-lg font-bold text-[#0F1B2D] dark:text-[#F1F5F9]">
                         {booking.room?.title}
                       </h3>
-                      
-                      {/* Status Badge */}
-                      <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold shadow-sm tracking-wider uppercase ${
-                        booking.status === 'PENDING' 
-                          ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20' 
-                          : booking.status === 'APPROVED'
-                            ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20'
-                            : booking.status === 'BOOKED'
-                              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
-                              : booking.status === 'LEAVE_REQUESTED'
-                                ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20'
-                                : booking.status === 'VACATED'
-                                  ? 'bg-slate-700/10 text-slate-700 dark:text-slate-300 border border-slate-500/20'
-                                  : booking.status === 'CANCELLED'
-                                    ? 'bg-slate-100 text-slate-500 dark:bg-slate-850 dark:text-slate-400 border border-slate-200/20 dark:border-slate-800/25'
-                                    : 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20'
-                      }`}>
-                        {booking.status === 'APPROVED' 
-                          ? 'APPROVED • PAYMENT PENDING' 
-                          : booking.status === 'BOOKED' 
-                            ? 'PAID & OCCUPIED' 
-                            : booking.status === 'LEAVE_REQUESTED'
-                              ? 'VACATE REQUESTED • PENDING APPROVAL'
-                              : booking.status === 'VACATED'
-                                ? 'ROOM VACATED • 70% REFUNDED'
-                                : booking.status}
-                      </span>
+
+                      {booking.status === "PENDING" && (
+                        <Badge variant="warning" size="sm">
+                          Pending Owner Approval
+                        </Badge>
+                      )}
+                      {booking.status === "APPROVED" && (
+                        <Badge variant="primary" size="sm">
+                          Approved • Payment Pending
+                        </Badge>
+                      )}
+                      {booking.status === "BOOKED" && (
+                        <Badge variant="verified" size="sm">
+                          <CheckCircle2 size={11} strokeWidth={2} />
+                          <span>Paid & Confirmed</span>
+                        </Badge>
+                      )}
+                      {booking.status === "LEAVE_REQUESTED" && (
+                        <Badge variant="warning" size="sm">
+                          Vacate Requested
+                        </Badge>
+                      )}
+                      {booking.status === "VACATED" && (
+                        <Badge variant="neutral" size="sm">
+                          Vacated & Settled
+                        </Badge>
+                      )}
                     </div>
 
-                    <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
-                      <MapPin size={14} className="text-slate-400" />
+                    <div className="flex items-center gap-1.5 text-xs text-[#5B6B7F] dark:text-[#94A3B8]">
+                      <MapPin size={13} strokeWidth={1.75} className="shrink-0" />
                       <span>{booking.room?.location} • {booking.room?.bhkType}</span>
                     </div>
 
-                    <div className="text-base font-extrabold text-emerald-600 dark:text-emerald-400">
-                      ₹{booking.room?.rent?.toLocaleString("en-IN")}/month
+                    <div className="text-base font-bold text-[#0F1B2D] dark:text-[#F1F5F9]">
+                      ₹{rent.toLocaleString("en-IN")}<span className="text-xs font-normal text-[#5B6B7F] dark:text-[#94A3B8]">/month</span>
                     </div>
 
-                    {/* Payment Required Callout for Approved Bookings */}
-                    {booking.status === 'APPROVED' && (
-                      <div className="p-3.5 bg-blue-500/10 border border-blue-500/20 rounded-2xl flex items-start gap-3">
-                        <Sparkles className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
-                        <div className="text-xs space-y-1">
-                          <p className="font-bold text-blue-900 dark:text-blue-200">
-                            Owner Approved Your Request!
-                          </p>
-                          <p className="text-blue-700/80 dark:text-blue-300/80">
-                            Complete the rent payment to lock your reservation. Without payment, the room remains unbooked.
-                          </p>
-                        </div>
+                    {/* Approved Alert */}
+                    {booking.status === "APPROVED" && (
+                      <div className="p-3 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/40 rounded-lg text-xs space-y-1 text-[#1D4ED8] dark:text-blue-300">
+                        <p className="font-semibold">Owner Approved Your Request</p>
+                        <p className="text-[#5B6B7F] dark:text-[#94A3B8]">
+                          Complete payment to finalize your reservation. The room is held until payment is confirmed.
+                        </p>
                       </div>
                     )}
 
                     {/* Confirmed Banner for Booked */}
-                    {booking.status === 'BOOKED' && (
-                      <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
-                        <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300 font-semibold">
-                          <CheckCircle2 size={16} className="text-emerald-500 shrink-0" />
-                          <span>Active Tenancy: Room confirmed and locked for you.</span>
+                    {booking.status === "BOOKED" && (
+                      <div className="p-3 bg-[#DCFCE7]/70 dark:bg-emerald-950/30 border border-[#BBF7D0] dark:border-emerald-800/40 rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+                        <div className="flex items-center gap-2 text-[#15803D] dark:text-emerald-300 font-medium">
+                          <CheckCircle2 size={15} strokeWidth={2} className="shrink-0" />
+                          <span>Active Tenancy: Room confirmed for you.</span>
                         </div>
                         <button
+                          type="button"
                           onClick={() => setReceiptBookingId(booking._id)}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-600 text-white rounded-lg font-bold text-[11px] shadow-sm hover:bg-emerald-700 transition-colors shrink-0"
+                          className="h-8 px-3 bg-white dark:bg-[#111A2B] border border-[#E3E8EE] dark:border-[#1F2A3D] text-[#0F1B2D] dark:text-[#F1F5F9] rounded-lg text-xs font-medium hover:bg-[#F5F8FA] transition-colors inline-flex items-center gap-1.5 cursor-pointer w-full sm:w-auto justify-center"
                         >
-                          <Receipt size={12} />
-                          <span>View Receipt</span>
+                          <Receipt size={13} strokeWidth={1.75} />
+                          <span>View Official Receipt</span>
                         </button>
                       </div>
                     )}
 
                     {/* Vacate Requested Banner */}
-                    {booking.status === 'LEAVE_REQUESTED' && (
-                      <div className="p-3.5 bg-purple-500/10 border border-purple-500/20 rounded-2xl space-y-1.5 text-xs text-purple-800 dark:text-purple-300">
-                        <div className="flex items-center gap-2 font-bold text-purple-900 dark:text-purple-200">
-                          <AlertCircle size={16} className="text-purple-500 shrink-0" />
-                          <span>Leave Request Sent to Owner</span>
-                        </div>
-                        <p className="text-purple-700/90 dark:text-purple-300/90 leading-relaxed">
-                          Your request to vacate this room is waiting for owner approval. Once approved:
+                    {booking.status === "LEAVE_REQUESTED" && (
+                      <div className="p-3 bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800/40 rounded-lg space-y-1 text-xs text-purple-900 dark:text-purple-300">
+                        <p className="font-semibold flex items-center gap-1.5">
+                          <AlertCircle size={14} strokeWidth={1.75} />
+                          <span>Vacate Notice Submitted</span>
                         </p>
-                        <ul className="list-disc list-inside text-[11px] space-y-0.5 text-purple-700 dark:text-purple-300 font-medium">
-                          <li>70% Refund (<strong className="font-bold">₹{refundEst.toLocaleString('en-IN')}</strong>) will be credited directly to your Wallet.</li>
-                          <li>30% Early Vacate Fee (<strong className="font-bold">₹{deductionEst.toLocaleString('en-IN')}</strong>) is retained by the Owner.</li>
-                        </ul>
+                        <p className="text-[#5B6B7F] dark:text-[#94A3B8]">
+                          Waiting for owner approval. 70% (₹{refundEst.toLocaleString("en-IN")}) will be credited to your wallet, and 30% (₹{deductionEst.toLocaleString("en-IN")}) retained by the owner.
+                        </p>
                       </div>
                     )}
 
                     {/* Vacated Banner */}
-                    {booking.status === 'VACATED' && (
-                      <div className="p-3.5 bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/20 dark:border-emerald-500/30 rounded-2xl space-y-1 text-xs">
-                        <div className="flex items-center gap-2 font-bold text-emerald-800 dark:text-emerald-300">
-                          <CheckCircle2 size={16} className="text-emerald-500 shrink-0" />
-                          <span>Lease Terminated & Room Vacated</span>
-                        </div>
-                        <p className="text-emerald-700/90 dark:text-emerald-200/90 text-[11px] leading-relaxed">
-                          70% Refund of <strong className="font-bold text-emerald-900 dark:text-emerald-100">₹{refundEst.toLocaleString('en-IN')}</strong> was credited to your wallet (30% retained by owner: <strong className="font-bold text-emerald-900 dark:text-emerald-100">₹{deductionEst.toLocaleString('en-IN')}</strong>).
-                        </p>
+                    {booking.status === "VACATED" && (
+                      <div className="p-3 bg-[#F5F8FA] dark:bg-[#0B1220] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-lg text-xs text-[#5B6B7F] dark:text-[#94A3B8]">
+                        Lease completed. 70% refund (₹{refundEst.toLocaleString("en-IN")}) returned to your wallet.
                       </div>
                     )}
-                    
-                    {/* Owner Contact Details */}
-                    <div className="p-3.5 bg-slate-50/50 dark:bg-slate-900/40 rounded-2xl border border-slate-200/20 dark:border-slate-800/20 space-y-1.5">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Owner Contact Details</span>
-                      <div className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300">
-                        <User size={13} className="text-slate-400" />
-                        <span className="font-semibold">{booking.owner?.name}</span>
+
+                    {/* Landlord Contact Info */}
+                    <div className="p-3 bg-[#F5F8FA] dark:bg-[#0B1220] rounded-lg border border-[#E3E8EE] dark:border-[#1F2A3D] space-y-1 text-xs">
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-[#5B6B7F] dark:text-[#94A3B8] block">
+                        Landlord Information
+                      </span>
+                      <div className="flex items-center gap-2 text-[#0F1B2D] dark:text-[#F1F5F9]">
+                        <User size={13} strokeWidth={1.75} className="text-[#5B6B7F] dark:text-[#94A3B8]" />
+                        <span className="font-medium">{booking.owner?.name || "Landlord"}</span>
                       </div>
-                      <div className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300">
-                        <Mail size={13} className="text-slate-400" />
-                        <span>{booking.owner?.email}</span>
+                      <div className="flex items-center gap-2 text-[#5B6B7F] dark:text-[#94A3B8]">
+                        <Mail size={13} strokeWidth={1.75} />
+                        <span className="break-all">{booking.owner?.email}</span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Bottom Milestones / Actions */}
-                  <div className="mt-5 pt-4 border-t border-slate-200/50 dark:border-slate-800/50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                    <div className="flex items-center gap-1.5 text-xs text-slate-400">
-                      <Calendar size={14} />
-                      <span>Requested on {new Date(booking.createdAt).toLocaleDateString()}</span>
-                    </div>
+                  {/* Actions Bar */}
+                  <div className="pt-3 border-t border-[#E3E8EE] dark:border-[#1F2A3D] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    <span className="text-[#5B6B7F] dark:text-[#94A3B8] flex items-center gap-1.5">
+                      <Calendar size={13} strokeWidth={1.75} />
+                      <span>Requested {new Date(booking.createdAt).toLocaleDateString()}</span>
+                    </span>
 
-                    <div className="flex flex-wrap items-center gap-2">
-                      {/* Pay & Book button for APPROVED */}
-                      {booking.status === 'APPROVED' && (
+                    <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                      {booking.status === "APPROVED" && (
                         <button
+                          type="button"
                           onClick={() => setPayingBooking(booking)}
-                          className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl text-xs font-bold shadow-md shadow-emerald-600/20 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
+                          className="w-full sm:w-auto h-9 px-4 bg-[#1D4ED8] hover:bg-[#1E40AF] text-white rounded-lg font-medium text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                         >
-                          <CreditCard size={14} />
-                          <span>Pay ₹{booking.room?.rent?.toLocaleString("en-IN")} & Book</span>
+                          <CreditCard size={14} strokeWidth={1.75} />
+                          <span>Pay ₹{rent.toLocaleString("en-IN")} & Confirm</span>
                         </button>
                       )}
 
-                      {/* Request to Leave Room for BOOKED */}
-                      {booking.status === 'BOOKED' && (
+                      {booking.status === "BOOKED" && (
                         <button
+                          type="button"
                           onClick={() => setLeaveModalBooking(booking)}
-                          className="px-4 py-2 bg-gradient-to-r from-rose-500 to-amber-600 hover:from-rose-600 hover:to-amber-700 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-500/20 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
+                          className="w-full sm:w-auto h-9 px-4 bg-white dark:bg-[#111A2B] text-[#B91C1C] border border-[#B91C1C] hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg font-medium text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                         >
-                          <span>🚪 Request to Leave / Vacate</span>
+                          <span>Request to Vacate</span>
                         </button>
                       )}
 
-                      {/* Pending notification */}
-                      {booking.status === 'PENDING' && (
-                        <div className="inline-flex items-center gap-1 text-xs text-amber-500 font-semibold px-2.5 py-1 rounded-xl bg-amber-500/10 border border-amber-500/20">
-                          <Lock size={12} />
-                          <span>Awaiting Owner Approval</span>
-                        </div>
+                      {booking.status === "PENDING" && (
+                        <span className="inline-flex items-center gap-1.5 text-xs text-amber-800 dark:text-amber-300 font-medium px-2.5 py-1 rounded bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/40">
+                          <Lock size={12} strokeWidth={1.75} />
+                          <span>Awaiting Owner Review</span>
+                        </span>
                       )}
-                      
-                      {/* Cancel action */}
-                      {(booking.status === 'PENDING' || booking.status === 'APPROVED') && (
+
+                      {(booking.status === "PENDING" || booking.status === "APPROVED") && (
                         <button
+                          type="button"
                           onClick={() => cancelBooking(booking._id)}
-                          className="px-3.5 py-2 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white rounded-xl text-xs font-bold transition-all"
+                          className="w-full sm:w-auto h-9 px-3 text-[#B91C1C] hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg text-xs font-medium transition-colors cursor-pointer"
                         >
                           Cancel Request
                         </button>
@@ -308,13 +293,13 @@ const MyBookings = () => {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
         </div>
       )}
 
-      {/* Leave Room Modal Dialog */}
+      {/* Leave Room Modal */}
       {leaveModalBooking && (
         <LeaveRoomModal
           isOpen={Boolean(leaveModalBooking)}

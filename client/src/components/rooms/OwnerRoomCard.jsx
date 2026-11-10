@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Edit3, Trash2, X, Bed, Maximize2, Sparkles } from "lucide-react";
+import React, { useState } from "react";
+import { MapPin, Edit3, Trash2, X, CheckCircle2 } from "lucide-react";
+import Badge from "../ui/Badge";
 
 const OwnerRoomCard = ({ room, onEdit, onDelete }) => {
   const [open, setOpen] = useState(false);
@@ -12,151 +12,171 @@ const OwnerRoomCard = ({ room, onEdit, onDelete }) => {
     }
   };
 
+  const rentPrice = Number(room.rent || room.price || 0);
+
   return (
     <>
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        whileHover={{ y: -6 }}
+      <div
         onClick={() => setOpen(true)}
-        className="glass-panel rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-emerald-500/5 border border-slate-200/50 dark:border-slate-800/80 transition-all duration-300 flex flex-col h-full group cursor-pointer"
+        className="bg-white dark:bg-[#111A2B] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-xl overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 hover:shadow-[0_4px_6px_-1px_rgba(0,0,0,0.06)] transition-all duration-150 flex flex-col h-full cursor-pointer text-left group"
       >
-        {/* Image Area */}
-        <div className="relative overflow-hidden aspect-[4/3] w-full">
+        {/* Image Area 4:3 */}
+        <div className="relative aspect-[4/3] w-full bg-[#F5F8FA] dark:bg-[#0B1220] overflow-hidden">
           <img
-            src={room.imageUrl || room.image}
+            src={
+              room.imageUrl ||
+              room.image ||
+              "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=600&q=80"
+            }
             alt={room.title}
-            className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-200"
           />
 
-          {/* Status badge */}
           <div className="absolute top-3 right-3">
             {room.isBooked ? (
-              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-500 text-white shadow-sm">
-                BOOKED
-              </span>
+              <Badge variant="danger" size="sm">
+                Occupied
+              </Badge>
             ) : (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500 text-white shadow-sm">
-                <Sparkles size={8} className="fill-white" /> AVAILABLE
-              </span>
+              <Badge variant="verified" size="sm">
+                <CheckCircle2 size={11} strokeWidth={2} />
+                <span>Available</span>
+              </Badge>
             )}
           </div>
         </div>
 
-        {/* Content Area */}
-        <div className="p-5 flex-1 flex flex-col justify-between">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1 text-[10px] font-bold tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-500/20 px-2 py-0.5 rounded-md uppercase">
-                <Bed size={10} /> {room.bhkType || room.type || "Apartment"}
-              </span>
-            </div>
-            
-            <h3 className="text-base font-bold text-slate-900 dark:text-white leading-tight group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors line-clamp-1">
+        {/* Content Details */}
+        <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
+          <div className="space-y-1.5">
+            <span className="text-[11px] font-semibold text-[#5B6B7F] dark:text-[#94A3B8] uppercase tracking-wider block">
+              {room.bhkType || room.type || "Studio"} • Listed Property
+            </span>
+
+            <h3 className="text-base font-bold text-[#0F1B2D] dark:text-[#F1F5F9] truncate group-hover:text-[#1D4ED8] dark:group-hover:text-[#3B82F6] transition-colors">
               {room.title}
             </h3>
 
-            {/* Location */}
-            <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
-              <MapPin size={14} className="text-slate-400 dark:text-slate-500" />
+            <div className="flex items-center gap-1.5 text-xs text-[#5B6B7F] dark:text-[#94A3B8]">
+              <MapPin size={13} strokeWidth={1.75} className="shrink-0" />
               <span className="truncate">{room.location}</span>
             </div>
           </div>
 
-          <div className="pt-4 mt-4 border-t border-slate-200/50 dark:border-slate-800/50 flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase block leading-none">Monthly Rent</span>
-                <span className="text-base font-extrabold text-slate-900 dark:text-white mt-1 block">
-                  ₹{room.rent || room.price}
-                </span>
-              </div>
+          <div className="pt-3 border-t border-[#E3E8EE] dark:border-[#1F2A3D] space-y-3">
+            <div>
+              <span className="text-[10px] uppercase font-semibold text-[#5B6B7F] dark:text-[#94A3B8] block leading-none">
+                Rent
+              </span>
+              <span className="text-base font-bold text-[#0F1B2D] dark:text-[#F1F5F9] block mt-0.5">
+                ₹{rentPrice.toLocaleString("en-IN")}
+                <span className="text-xs font-normal text-[#5B6B7F] dark:text-[#94A3B8]">/mo</span>
+              </span>
             </div>
 
             {/* Owner Actions */}
-            <div className="flex items-center gap-2 pt-2 border-t border-slate-200/20 dark:border-slate-800/20">
+            <div className="flex items-center gap-2 pt-2 border-t border-[#E3E8EE] dark:border-[#1F2A3D]">
               <button
+                type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   onEdit && onEdit(room._id);
                 }}
-                className="flex-1 py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition-all flex items-center justify-center gap-1.5"
+                className="flex-1 h-9 px-3 rounded-lg border border-[#E3E8EE] dark:border-[#1F2A3D] bg-[#F5F8FA] hover:bg-white dark:bg-[#0B1220] dark:hover:bg-[#162035] text-[#0F1B2D] dark:text-[#F1F5F9] text-xs font-medium transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                <Edit3 size={13} />
+                <Edit3 size={13} strokeWidth={1.75} />
                 <span>Edit</span>
               </button>
               
               <button
+                type="button"
                 onClick={handleDelete}
-                className="py-2 px-3 rounded-xl bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5"
+                className="h-9 px-3 rounded-lg border border-red-200 dark:border-red-900/40 text-[#B91C1C] hover:bg-red-50 dark:hover:bg-red-950/20 text-xs font-medium transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                <Trash2 size={13} />
+                <Trash2 size={13} strokeWidth={1.75} />
                 <span>Delete</span>
               </button>
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
 
-      {/* Fullscreen Image Preview */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-black/90 dark:bg-black/95 flex flex-col items-center justify-center pt-24 pb-8 px-4 sm:px-6 backdrop-blur-md overflow-y-auto"
-            onClick={() => setOpen(false)}
+      {/* Preview Modal */}
+      {open && (
+        <div
+          className="fixed inset-0 z-[120] bg-black/60 flex items-center justify-center p-4 overflow-y-auto"
+          onClick={() => setOpen(false)}
+        >
+          <div
+            className="relative w-full max-w-2xl bg-white dark:bg-[#111A2B] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-xl overflow-hidden shadow-xl text-left my-auto"
+            onClick={(e) => e.stopPropagation()}
           >
-            {/* Close button positioned below navbar */}
-            <button
-              onClick={() => setOpen(false)}
-              className="fixed top-24 right-6 z-50 p-2.5 bg-white/20 hover:bg-white/30 text-white rounded-full transition-all duration-200 backdrop-blur-md hover:scale-110 shadow-lg"
-              aria-label="Close Preview"
-            >
-              <X size={20} />
-            </button>
+            <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#E3E8EE] dark:border-[#1F2A3D]">
+              <span className="text-xs font-semibold text-[#5B6B7F] dark:text-[#94A3B8] uppercase tracking-wider">
+                Property Overview
+              </span>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                className="p-1 rounded-lg text-[#5B6B7F] hover:text-[#0F1B2D] dark:text-[#94A3B8] dark:hover:text-[#F1F5F9] transition-colors"
+                aria-label="Close"
+              >
+                <X size={18} strokeWidth={1.75} />
+              </button>
+            </div>
 
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="relative max-w-4xl w-full flex flex-col gap-4 my-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <img
-                src={room.imageUrl || room.image}
-                alt={room.title}
-                className="w-full max-h-[55vh] object-contain rounded-2xl shadow-2xl border border-white/10"
-              />
-
-              {/* Bottom metadata banner */}
-              <div className="bg-slate-900/95 backdrop-blur-md p-5 rounded-2xl border border-slate-700/80 text-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-2xl">
-                <div>
-                  <h4 className="font-bold text-lg text-white">{room.title}</h4>
-                  <div className="flex items-center gap-1.5 text-slate-300 text-xs mt-1">
-                    <MapPin size={14} className="text-emerald-400" />
-                    <span>{room.location}</span>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-6">
-                  <div>
-                    <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">BHK type</span>
-                    <span className="text-sm font-bold block mt-0.5 text-white">{room.bhkType || room.type}</span>
-                  </div>
-                  <div className="border-l border-slate-700/60 pl-6">
-                    <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">Monthly rent</span>
-                    <span className="text-base font-extrabold text-emerald-400 block mt-0.5">₹{room.rent || room.price}</span>
-                  </div>
-                </div>
+            <div className="p-5 space-y-4 max-h-[80vh] overflow-y-auto">
+              <div className="aspect-[16/10] w-full rounded-lg overflow-hidden bg-[#F5F8FA] dark:bg-[#0B1220] border border-[#E3E8EE] dark:border-[#1F2A3D]">
+                <img
+                  src={
+                    room.imageUrl ||
+                    room.image ||
+                    "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80"
+                  }
+                  alt={room.title}
+                  className="w-full h-full object-cover"
+                />
               </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  <h2 className="text-xl font-bold text-[#0F1B2D] dark:text-[#F1F5F9]">
+                    {room.title}
+                  </h2>
+                  <span className="text-lg font-bold text-[#1D4ED8] dark:text-[#3B82F6]">
+                    ₹{rentPrice.toLocaleString("en-IN")}/month
+                  </span>
+                </div>
+
+                <p className="text-xs text-[#5B6B7F] dark:text-[#94A3B8] flex items-center gap-1.5">
+                  <MapPin size={14} strokeWidth={1.75} />
+                  <span>{room.location}</span>
+                </p>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="h-10 px-4 text-xs font-medium border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-lg text-[#0F1B2D] dark:text-[#F1F5F9] hover:bg-[#F5F8FA] transition-colors cursor-pointer"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpen(false);
+                    onEdit && onEdit(room._id);
+                  }}
+                  className="h-10 px-5 bg-[#1D4ED8] hover:bg-[#1E40AF] dark:bg-[#3B82F6] dark:hover:bg-[#2563EB] text-white text-xs font-medium rounded-lg transition-colors cursor-pointer"
+                >
+                  Edit Property
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

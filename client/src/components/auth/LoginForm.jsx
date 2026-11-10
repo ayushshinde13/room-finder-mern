@@ -1,9 +1,9 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import API from "../../services/api";
 import { useNavigate, Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import toast from "react-hot-toast";
-import { Mail, Lock, Loader2, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -33,7 +33,6 @@ const LoginForm = () => {
       login(data);
       toast.success(`Welcome back, ${data.user?.name || "User"}!`);
       
-      // Navigate to explore for renters or my-rooms for owners, or profile as fallback
       if (data.user?.role === "OWNER") {
         navigate("/my-rooms");
       } else {
@@ -47,29 +46,23 @@ const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={submitHandler} className="space-y-5">
+    <form onSubmit={submitHandler} className="space-y-4">
       {/* Email Input */}
       <div className="space-y-1.5">
-        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+        <label className="block text-xs font-semibold text-[#0F1B2D] dark:text-[#F1F5F9] uppercase tracking-wider">
           Email Address
         </label>
         <div className="relative">
-          <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 pointer-events-none">
-            <Mail size={18} />
+          <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#5B6B7F] dark:text-[#94A3B8] pointer-events-none">
+            <Mail size={16} strokeWidth={1.75} />
           </span>
           <input
             type="email"
             required
-            placeholder="name@company.com"
+            placeholder="name@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 rounded-xl
-                       bg-slate-50 dark:bg-slate-800/50 
-                       text-slate-900 dark:text-white 
-                       placeholder-slate-400 dark:placeholder-slate-500
-                       border border-slate-200 dark:border-slate-800/80
-                       focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500
-                       transition-all duration-200 text-sm"
+            className="w-full h-11 pl-10 pr-4 bg-white dark:bg-[#0B1220] text-[#0F1B2D] dark:text-[#F1F5F9] placeholder-[#5B6B7F]/60 dark:placeholder-[#94A3B8]/60 border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1D4ED8]/20 focus:border-[#1D4ED8] dark:focus:ring-[#3B82F6]/30 dark:focus:border-[#3B82F6] transition-colors text-sm"
           />
         </div>
       </div>
@@ -77,19 +70,19 @@ const LoginForm = () => {
       {/* Password Input */}
       <div className="space-y-1.5">
         <div className="flex justify-between items-center">
-          <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+          <label className="block text-xs font-semibold text-[#0F1B2D] dark:text-[#F1F5F9] uppercase tracking-wider">
             Password
           </label>
           <Link
             to="/forgot-password"
-            className="text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 dark:hover:text-emerald-300 transition-colors"
+            className="text-xs font-medium text-[#1D4ED8] hover:text-[#1E40AF] dark:text-[#3B82F6] dark:hover:text-[#2563EB] hover:underline"
           >
             Forgot password?
           </Link>
         </div>
         <div className="relative">
-          <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 pointer-events-none">
-            <Lock size={18} />
+          <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#5B6B7F] dark:text-[#94A3B8] pointer-events-none">
+            <Lock size={16} strokeWidth={1.75} />
           </span>
           <input
             type={showPassword ? "text" : "password"}
@@ -97,39 +90,27 @@ const LoginForm = () => {
             placeholder="••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full pl-10 pr-11 py-3 rounded-xl
-                       bg-slate-50 dark:bg-slate-800/50 
-                       text-slate-900 dark:text-white 
-                       placeholder-slate-400 dark:placeholder-slate-500
-                       border border-slate-200 dark:border-slate-800/80
-                       focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500
-                       transition-all duration-200 text-sm"
+            className="w-full h-11 pl-10 pr-11 bg-white dark:bg-[#0B1220] text-[#0F1B2D] dark:text-[#F1F5F9] placeholder-[#5B6B7F]/60 dark:placeholder-[#94A3B8]/60 border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1D4ED8]/20 focus:border-[#1D4ED8] dark:focus:ring-[#3B82F6]/30 dark:focus:border-[#3B82F6] transition-colors text-sm"
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+            className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-[#5B6B7F] dark:text-[#94A3B8] hover:text-[#0F1B2D] dark:hover:text-[#F1F5F9] transition-colors cursor-pointer"
             aria-label={showPassword ? "Hide password" : "Show password"}
           >
-            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            {showPassword ? <EyeOff size={16} strokeWidth={1.75} /> : <Eye size={16} strokeWidth={1.75} />}
           </button>
         </div>
       </div>
 
-      {/* Submit Button */}
+      {/* Solid Primary Submit Button */}
       <button
         type="submit"
         disabled={loading}
-        className="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700
-                   text-white font-semibold rounded-xl transition-all duration-200
-                   shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/20
-                   flex items-center justify-center gap-2 text-sm disabled:opacity-50 active:scale-[0.99]"
+        className="w-full h-11 bg-[#1D4ED8] hover:bg-[#1E40AF] dark:bg-[#3B82F6] dark:hover:bg-[#2563EB] text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2 text-sm disabled:opacity-50 cursor-pointer mt-2"
       >
         {loading ? (
-          <>
-            <Loader2 size={16} className="animate-spin" />
-            <span>Signing in...</span>
-          </>
+          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
         ) : (
           "Sign In"
         )}

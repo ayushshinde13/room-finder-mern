@@ -1,9 +1,8 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+import React, { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import API from "../services/api";
 import toast from "react-hot-toast";
-import { Lock, Loader2, KeyRound, Eye, EyeOff, CheckCircle2, ArrowRight } from "lucide-react";
+import { Lock, Eye, EyeOff, CheckCircle2, ArrowRight } from "lucide-react";
 
 const ResetPassword = () => {
   const { token } = useParams();
@@ -41,68 +40,49 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="min-h-[80vh] flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-md space-y-6 glass-panel p-8 rounded-3xl shadow-xl relative z-10 border border-slate-200/50 dark:border-slate-800/50"
-      >
-        <div className="text-center">
-          <motion.div
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.3 }}
-            className="mx-auto h-12 w-12 rounded-2xl bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-500 flex items-center justify-center mb-4"
-          >
-            <KeyRound size={24} className="text-emerald-500" />
-          </motion.div>
-          
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-            Set New Password
-          </h2>
-          <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">
-            Create a strong new password for your account.
+    <div className="min-h-[75vh] flex flex-col items-center justify-center py-10 px-4">
+      <div className="w-full max-w-md bg-white dark:bg-[#111A2B] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.04)] p-6 sm:p-8 space-y-6 text-left">
+        <div className="space-y-1.5">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#1D4ED8] dark:text-[#3B82F6]">
+            Security
+          </span>
+          <h1 className="text-2xl font-bold tracking-tight text-[#0F1B2D] dark:text-[#F1F5F9]">
+            Set new password
+          </h1>
+          <p className="text-xs text-[#5B6B7F] dark:text-[#94A3B8]">
+            Create a secure new password for your RoomFinder account.
           </p>
         </div>
 
         {isSuccess ? (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="space-y-5 pt-2"
-          >
-            <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-300 flex items-start gap-3">
-              <CheckCircle2 size={20} className="text-emerald-500 flex-shrink-0 mt-0.5" />
+          <div className="space-y-4 pt-1">
+            <div className="p-4 rounded-lg bg-[#DCFCE7] dark:bg-emerald-950/60 border border-[#BBF7D0] dark:border-emerald-800/40 text-[#15803D] dark:text-emerald-300 flex items-start gap-3">
+              <CheckCircle2 size={18} strokeWidth={2} className="shrink-0 mt-0.5" />
               <div className="text-xs space-y-1">
-                <p className="font-semibold text-sm">Password Updated!</p>
-                <p className="text-slate-600 dark:text-slate-300">
-                  Your password has been securely reset. You can now sign in with your new credentials.
+                <p className="font-semibold text-sm">Password updated</p>
+                <p className="text-[#0F1B2D] dark:text-[#F1F5F9]">
+                  Your password has been successfully reset. You can now sign in with your new credentials.
                 </p>
               </div>
             </div>
 
             <button
               onClick={() => navigate("/login")}
-              className="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700
-                         text-white font-semibold rounded-xl transition-all duration-200
-                         shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/20
-                         flex items-center justify-center gap-2 text-sm"
+              className="w-full h-11 bg-[#1D4ED8] hover:bg-[#1E40AF] dark:bg-[#3B82F6] dark:hover:bg-[#2563EB] text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2 text-sm cursor-pointer"
             >
               <span>Go to Sign In</span>
-              <ArrowRight size={16} />
+              <ArrowRight size={15} strokeWidth={1.75} />
             </button>
-          </motion.div>
+          </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* New Password Input */}
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+              <label className="block text-xs font-semibold text-[#0F1B2D] dark:text-[#F1F5F9] uppercase tracking-wider">
                 New Password
               </label>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 pointer-events-none">
-                  <Lock size={18} />
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#5B6B7F] dark:text-[#94A3B8] pointer-events-none">
+                  <Lock size={16} strokeWidth={1.75} />
                 </span>
                 <input
                   type={showPassword ? "text" : "password"}
@@ -110,81 +90,52 @@ const ResetPassword = () => {
                   placeholder="At least 6 characters"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-11 py-3 rounded-xl
-                             bg-slate-50 dark:bg-slate-800/50 
-                             text-slate-900 dark:text-white 
-                             placeholder-slate-400 dark:placeholder-slate-500
-                             border border-slate-200 dark:border-slate-800/80
-                             focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500
-                             transition-all duration-200 text-sm"
+                  className="w-full h-11 pl-10 pr-11 bg-white dark:bg-[#0B1220] text-[#0F1B2D] dark:text-[#F1F5F9] placeholder-[#5B6B7F]/60 dark:placeholder-[#94A3B8]/60 border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1D4ED8]/20 focus:border-[#1D4ED8] dark:focus:ring-[#3B82F6]/30 dark:focus:border-[#3B82F6] transition-colors text-sm"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-[#5B6B7F] dark:text-[#94A3B8] hover:text-[#0F1B2D] dark:hover:text-[#F1F5F9] transition-colors cursor-pointer"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showPassword ? <EyeOff size={16} strokeWidth={1.75} /> : <Eye size={16} strokeWidth={1.75} />}
                 </button>
               </div>
             </div>
 
-            {/* Confirm Password Input */}
             <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+              <label className="block text-xs font-semibold text-[#0F1B2D] dark:text-[#F1F5F9] uppercase tracking-wider">
                 Confirm New Password
               </label>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 pointer-events-none">
-                  <Lock size={18} />
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#5B6B7F] dark:text-[#94A3B8] pointer-events-none">
+                  <Lock size={16} strokeWidth={1.75} />
                 </span>
                 <input
-                  type={showPassword ? "text" : "password"}
+                  type="password"
                   required
                   placeholder="Re-enter password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-xl
-                             bg-slate-50 dark:bg-slate-800/50 
-                             text-slate-900 dark:text-white 
-                             placeholder-slate-400 dark:placeholder-slate-500
-                             border border-slate-200 dark:border-slate-800/80
-                             focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500
-                             transition-all duration-200 text-sm"
+                  className="w-full h-11 pl-10 pr-4 bg-white dark:bg-[#0B1220] text-[#0F1B2D] dark:text-[#F1F5F9] placeholder-[#5B6B7F]/60 dark:placeholder-[#94A3B8]/60 border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1D4ED8]/20 focus:border-[#1D4ED8] dark:focus:ring-[#3B82F6]/30 dark:focus:border-[#3B82F6] transition-colors text-sm"
                 />
               </div>
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700
-                         text-white font-semibold rounded-xl transition-all duration-200
-                         shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/20
-                         flex items-center justify-center gap-2 text-sm disabled:opacity-50 active:scale-[0.99]"
+              className="w-full h-11 bg-[#1D4ED8] hover:bg-[#1E40AF] dark:bg-[#3B82F6] dark:hover:bg-[#2563EB] text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2 text-sm disabled:opacity-50 cursor-pointer mt-2"
             >
               {loading ? (
-                <>
-                  <Loader2 size={16} className="animate-spin" />
-                  <span>Updating password...</span>
-                </>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : (
                 "Reset Password"
               )}
             </button>
           </form>
         )}
-
-        <div className="text-center pt-2">
-          <Link
-            to="/login"
-            className="text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors"
-          >
-            Back to Sign In
-          </Link>
-        </div>
-      </motion.div>
+      </div>
     </div>
   );
 };

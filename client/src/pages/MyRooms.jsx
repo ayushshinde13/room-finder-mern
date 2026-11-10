@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import OwnerRoomCard from "../components/rooms/OwnerRoomCard";
-import { motion } from "framer-motion";
 import API from "../services/api";
 import toast from "react-hot-toast";
 import { Plus, Building2, AlertCircle, RefreshCw } from "lucide-react";
+import Button from "../components/ui/Button";
 
 const MyRooms = () => {
   const { user, token } = useAuth();
@@ -14,21 +14,22 @@ const MyRooms = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const fetchMyRooms = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const { data } = await API.get("/rooms/owner");
+      setRooms(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Failed to fetch my rooms", err);
+      setError("Failed to fetch your properties. Please retry.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!token || user?.role !== "OWNER") return;
-
-    const fetchMyRooms = async () => {
-      try {
-        const { data } = await API.get("/rooms/owner");
-        setRooms(data);
-      } catch (error) {
-        console.error("Failed to fetch my rooms", error);
-        setError("Failed to fetch your rooms");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchMyRooms();
   }, [token, user]);
 
@@ -37,99 +38,94 @@ const MyRooms = () => {
   };
 
   const handleDeleteRoom = async (roomId) => {
-    if (!window.confirm("Are you sure you want to delete this room?")) {
+    if (!window.confirm("Are you sure you want to delete this property listing?")) {
       return;
     }
 
     try {
       await API.delete(`/rooms/${roomId}`);
-      setRooms(rooms.filter(room => room._id !== roomId));
-      toast.success('Room deleted successfully');
-    } catch (error) {
-      console.error('Error deleting room:', error);
-      toast.error('An error occurred while deleting the room');
+      setRooms(rooms.filter((room) => room._id !== roomId));
+      toast.success("Property removed successfully");
+    } catch (err) {
+      toast.error("Failed to delete property");
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-[70vh] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-emerald-500" />
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#1D4ED8] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center p-4">
-        <div className="glass-panel p-8 rounded-3xl border border-red-500/20 text-center max-w-md w-full shadow-lg">
-          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Error Loading Rooms</h3>
-          <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5"
-          >
-            <RefreshCw size={14} />
-            <span>Retry Connection</span>
-          </button>
+      <div className="min-h-[50vh] flex items-center justify-center p-4">
+        <div className="bg-white dark:bg-[#111A2B] border border-red-200 dark:border-red-900/40 p-8 rounded-xl text-center max-w-md w-full space-y-4">
+          <AlertCircle className="w-10 h-10 text-[#B91C1C] mx-auto" strokeWidth={1.5} />
+          <h3 className="text-base font-bold text-[#0F1B2D] dark:text-[#F1F5F9]">
+            Unable to load properties
+          </h3>
+          <p className="text-xs text-[#5B6B7F] dark:text-[#94A3B8]">{error}</p>
+          <Button variant="secondary" size="sm" onClick={fetchMyRooms} className="w-full">
+            <RefreshCw size={13} strokeWidth={1.75} />
+            <span>Retry</span>
+          </Button>
         </div>
       </div>
     );
   }
 
-  if (!user || user.role !== 'OWNER') {
+  if (!user || user.role !== "OWNER") {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <p className="text-red-500 font-bold">Access denied. Owners only.</p>
+      <div className="min-h-[50vh] flex items-center justify-center">
+        <p className="text-[#B91C1C] font-semibold text-sm">Access denied. Landlords only.</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-            My listed properties
+    <div className="space-y-8 py-4 sm:py-6 text-left">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0F1B2D] dark:text-[#F1F5F9]">
+            My Listed Properties
           </h1>
-          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
-            Manage, edit status, or add new properties to your rent portfolio.
+          <p className="text-xs sm:text-sm text-[#5B6B7F] dark:text-[#94A3B8]">
+            Manage, edit status, or add new residential properties to your portfolio.
           </p>
         </div>
-        
-        <button
-          onClick={() => navigate("/add-room")}
-          className="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-emerald-500/10 flex items-center justify-center gap-1.5"
-        >
-          <Plus size={16} />
-          <span>Add New Room</span>
-        </button>
+
+        <Link to="/add-room" className="w-full sm:w-auto">
+          <button
+            type="button"
+            className="w-full sm:w-auto h-10 px-4 bg-[#1D4ED8] hover:bg-[#1E40AF] dark:bg-[#3B82F6] dark:hover:bg-[#2563EB] text-white text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+          >
+            <Plus size={15} strokeWidth={1.75} />
+            <span>List New Property</span>
+          </button>
+        </Link>
       </div>
 
       {rooms.length === 0 ? (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center py-16 glass-panel rounded-3xl border border-slate-200/50 dark:border-slate-800/50 max-w-2xl mx-auto"
-        >
-          <Building2 className="w-12 h-12 text-slate-300 dark:text-slate-700 mx-auto mb-4" />
-          <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200">
-            No Rental Rooms Listed
+        <div className="text-center py-16 bg-white dark:bg-[#111A2B] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-xl space-y-4 max-w-lg mx-auto p-8">
+          <Building2 className="w-10 h-10 text-[#5B6B7F] dark:text-[#94A3B8] mx-auto" strokeWidth={1.5} />
+          <h3 className="text-base font-bold text-[#0F1B2D] dark:text-[#F1F5F9]">
+            No rental properties listed yet
           </h3>
-          <p className="text-slate-500 dark:text-slate-400 text-sm mt-2 max-w-sm mx-auto mb-6">
-            You haven't listed any rooms yet. Click the button below to add your first property listing.
+          <p className="text-xs text-[#5B6B7F] dark:text-[#94A3B8] leading-relaxed">
+            Create your first verified property listing to receive tenant booking requests with zero brokerage fees.
           </p>
-          <button
-            onClick={() => navigate("/add-room")}
-            className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-xl text-xs font-bold shadow-md shadow-emerald-500/10 inline-flex items-center gap-1.5"
-          >
-            <Plus size={16} />
-            <span>List Your First Room</span>
-          </button>
-        </motion.div>
+          <Link to="/add-room" className="inline-block pt-1">
+            <Button variant="primary" size="md">
+              <Plus size={15} strokeWidth={1.75} />
+              <span>List Your First Property</span>
+            </Button>
+          </Link>
+        </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {rooms.map((room) => (
             <OwnerRoomCard 
               key={room._id} 

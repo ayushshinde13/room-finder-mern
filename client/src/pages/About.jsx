@@ -1,124 +1,94 @@
-import { motion } from "framer-motion";
+import React from "react";
+import { Mail, Phone, MapPin, ShieldCheck, Users, FileText } from "lucide-react";
+import Card from "../components/ui/Card";
 
 const About = () => {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.6 }}
-      className="min-h-screen bg-gray-100 dark:bg-gray-950
-                 text-gray-900 dark:text-gray-100"
-    >
-      {/* ================= HERO ================= */}
-      <section className="container mx-auto px-6 py-16">
-        <motion.h1
-          initial={{ y: 40, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6 }}
-          className="text-4xl md:text-5xl font-extrabold mb-6"
-        >
-          About RoomFinder
-        </motion.h1>
-
-        <motion.p
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="max-w-3xl text-lg text-gray-600 dark:text-gray-400"
-        >
-          <span className="font-semibold text-green-500">
-            Simplifying room rentals through trust, transparency, and technology.
-          </span>
-          <br />
-          <br />
-          RoomFinder is a modern rental platform designed to eliminate brokers,
-          reduce fraud, and connect tenants directly with verified property owners.
-          We focus on providing a seamless, secure, and user-friendly experience
-          for students, working professionals, and families.
-        </motion.p>
+    <div className="space-y-16 py-4 sm:py-8 max-w-5xl mx-auto text-left">
+      {/* Hero Header */}
+      <section className="space-y-4">
+        <span className="text-xs font-semibold uppercase tracking-wider text-[#1D4ED8] dark:text-[#3B82F6]">
+          Our Purpose
+        </span>
+        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#0F1B2D] dark:text-[#F1F5F9]">
+          Direct, verified room rentals without brokerage.
+        </h1>
+        <p className="text-base sm:text-lg text-[#5B6B7F] dark:text-[#94A3B8] leading-relaxed max-w-3xl">
+          RoomFinder was built to eliminate unnecessary brokerage fees and listing misinformation.
+          We connect prospective tenants directly with verified homeowners and property managers,
+          providing transparent pricing and official digital payment records.
+        </p>
       </section>
 
-      {/* ================= MISSION / VISION ================= */}
-      <section className="container mx-auto px-6 py-10
-                          grid grid-cols-1 md:grid-cols-2 gap-8">
-        {[
-          {
-            title: "Our Mission",
-            desc:
-              "To make room and apartment rentals transparent, affordable, and accessible for everyone — without middlemen or hidden charges.",
-          },
-          {
-            title: "Our Vision",
-            desc:
-              "To become India’s most trusted digital rental platform by empowering owners and renters with technology-driven solutions.",
-          },
-        ].map((item, i) => (
-          <motion.div
-            key={i}
-            initial={{ y: 30, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.2 }}
-            className="bg-white dark:bg-gray-900
-                       p-6 rounded-xl shadow"
-          >
-            <h3 className="text-2xl font-bold mb-3 text-green-500">
-              {item.title}
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              {item.desc}
-            </p>
-          </motion.div>
-        ))}
+      {/* Core Values Grid */}
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card padding="p-6" className="space-y-3">
+          <div className="w-10 h-10 rounded-lg bg-[#F5F8FA] dark:bg-[#162035] border border-[#E3E8EE] dark:border-[#1F2A3D] text-[#1D4ED8] dark:text-[#3B82F6] flex items-center justify-center">
+            <ShieldCheck size={20} strokeWidth={1.75} />
+          </div>
+          <h3 className="text-base font-bold text-[#0F1B2D] dark:text-[#F1F5F9]">
+            Verified Listings
+          </h3>
+          <p className="text-xs text-[#5B6B7F] dark:text-[#94A3B8] leading-relaxed">
+            Every property on RoomFinder is vetted for accurate photographic representation,
+            room amenities, and landlord legitimacy before appearing in search results.
+          </p>
+        </Card>
+
+        <Card padding="p-6" className="space-y-3">
+          <div className="w-10 h-10 rounded-lg bg-[#F5F8FA] dark:bg-[#162035] border border-[#E3E8EE] dark:border-[#1F2A3D] text-[#0F766E] dark:text-[#14B8A6] flex items-center justify-center">
+            <Users size={20} strokeWidth={1.75} />
+          </div>
+          <h3 className="text-base font-bold text-[#0F1B2D] dark:text-[#F1F5F9]">
+            Direct Owner Communication
+          </h3>
+          <p className="text-xs text-[#5B6B7F] dark:text-[#94A3B8] leading-relaxed">
+            Renters communicate directly with owners. No middleman broker can mark up the price
+            or require extra service retainers.
+          </p>
+        </Card>
+
+        <Card padding="p-6" className="space-y-3">
+          <div className="w-10 h-10 rounded-lg bg-[#F5F8FA] dark:bg-[#162035] border border-[#E3E8EE] dark:border-[#1F2A3D] text-[#1D4ED8] dark:text-[#3B82F6] flex items-center justify-center">
+            <FileText size={20} strokeWidth={1.75} />
+          </div>
+          <h3 className="text-base font-bold text-[#0F1B2D] dark:text-[#F1F5F9]">
+            Clear Legal Terms
+          </h3>
+          <p className="text-xs text-[#5B6B7F] dark:text-[#94A3B8] leading-relaxed">
+            From digital booking confirmations to structured 70/30 vacate settlements,
+            both tenants and property owners are protected by transparent platform policies.
+          </p>
+        </Card>
       </section>
 
-      {/* ================= CONTACT SECTION ================= */}
-      <section className="container mx-auto px-6 py-16">
-        <motion.h2
-          initial={{ y: 30, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4 }}
-          className="text-3xl font-bold mb-6"
-        >
-          Contact Us
-        </motion.h2>
+      {/* Support & Contact Section */}
+      <section className="space-y-6 pt-4 border-t border-[#E3E8EE] dark:border-[#1F2A3D]">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight text-[#0F1B2D] dark:text-[#F1F5F9]">
+            Contact & Support
+          </h2>
+          <p className="text-sm text-[#5B6B7F] dark:text-[#94A3B8] mt-1">
+            Questions regarding listing verification, bookings, or account access? Reach out directly.
+          </p>
+        </div>
 
-        <motion.p
-          initial={{ y: 20, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-          className="max-w-2xl text-gray-600 dark:text-gray-400 mb-8"
-        >
-          Whether you are a property owner looking to list your space
-          or a renter searching for the perfect home, our team is here
-          to help you every step of the way.
-        </motion.p>
-
-        <motion.div
-          initial={{ scale: 0.95, opacity: 0 }}
-          whileInView={{ scale: 1, opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="bg-white dark:bg-gray-900
-                     p-6 rounded-xl shadow max-w-md"
-        >
-          <p className="mb-2">
-            📧 <span className="font-semibold">Email:</span>{" "}
-            support@roomfinder.com
-          </p>
-          <p className="mb-2">
-            📞 <span className="font-semibold">Phone:</span>{" "}
-            +91 98765 XXXXX
-          </p>
-          <p>
-            📍 <span className="font-semibold">Location:</span>{" "}
-            India
-          </p>
-        </motion.div>
+        <Card padding="p-6" className="max-w-md space-y-3.5">
+          <div className="flex items-center gap-3 text-xs text-[#0F1B2D] dark:text-[#F1F5F9]">
+            <Mail size={16} strokeWidth={1.75} className="text-[#1D4ED8] dark:text-[#3B82F6] shrink-0" />
+            <span>support@roomfinder.com</span>
+          </div>
+          <div className="flex items-center gap-3 text-xs text-[#0F1B2D] dark:text-[#F1F5F9]">
+            <Phone size={16} strokeWidth={1.75} className="text-[#1D4ED8] dark:text-[#3B82F6] shrink-0" />
+            <span>+91 98765 43210</span>
+          </div>
+          <div className="flex items-center gap-3 text-xs text-[#0F1B2D] dark:text-[#F1F5F9]">
+            <MapPin size={16} strokeWidth={1.75} className="text-[#1D4ED8] dark:text-[#3B82F6] shrink-0" />
+            <span>Bengaluru & Raipur, India</span>
+          </div>
+        </Card>
       </section>
-    </motion.div>
+    </div>
   );
 };
 

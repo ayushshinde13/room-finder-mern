@@ -82,7 +82,7 @@ const EditRoom = () => {
   if (loading || loadingForm) {
     return (
       <div className="min-h-[70vh] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-emerald-500" />
+        <div className="w-8 h-8 border-2 border-[#1D4ED8] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -90,40 +90,40 @@ const EditRoom = () => {
   if (!user || user.role !== "OWNER") {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <p className="text-red-500 font-bold">Access denied. Owners only.</p>
+        <p className="text-[#B91C1C] font-semibold">Access denied. Landlords only.</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
+    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
       <div className="flex items-center gap-3 mb-8">
         <button
           onClick={() => navigate("/my-rooms")}
-          className="p-2 hover:bg-slate-100 dark:hover:bg-slate-900 border border-slate-200/50 dark:border-slate-800/50 text-slate-500 rounded-xl transition-colors"
+          className="p-2.5 bg-white dark:bg-[#111A2B] hover:bg-[#F5F8FA] dark:hover:bg-[#1F2A3D] border border-[#E3E8EE] dark:border-[#1F2A3D] text-[#5B6B7F] dark:text-[#94A3B8] rounded-lg transition-colors cursor-pointer"
           aria-label="Go Back"
         >
           <ArrowLeft size={18} />
         </button>
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-bold text-[#0F1B2D] dark:text-[#F1F5F9]">
             Edit Property Listing
           </h1>
-          <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">
+          <p className="text-[#5B6B7F] dark:text-[#94A3B8] text-sm mt-0.5">
             Modify details and descriptions for your room listing.
           </p>
         </div>
       </div>
 
-      <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-md">
+      <div className="bg-white dark:bg-[#111A2B] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-xl p-6 sm:p-8 shadow-sm">
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Title */}
-          <div className="space-y-1">
-            <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+          <div className="space-y-1.5">
+            <label className="block text-xs font-semibold text-[#5B6B7F] dark:text-[#94A3B8] uppercase tracking-wider">
               Room Title
             </label>
             <div className="relative">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 pointer-events-none">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#5B6B7F] dark:text-[#94A3B8] pointer-events-none">
                 <Building size={16} />
               </span>
               <input
@@ -132,7 +132,7 @@ const EditRoom = () => {
                 value={formData.title}
                 onChange={handleChange}
                 placeholder="e.g. Spacious 2BHK Near Metro Station"
-                className="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-800/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-800 dark:text-white placeholder-slate-400 text-sm"
+                className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-[#0B1220] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1D4ED8] focus:border-[#1D4ED8] text-[#0F1B2D] dark:text-[#F1F5F9] placeholder-[#5B6B7F]/60 dark:placeholder-[#94A3B8]/60 text-sm"
                 required
               />
             </div>
@@ -140,15 +140,15 @@ const EditRoom = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* BHK Type */}
-            <div className="space-y-1">
-              <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+            <div className="space-y-1.5">
+              <label className="block text-xs font-semibold text-[#5B6B7F] dark:text-[#94A3B8] uppercase tracking-wider">
                 BHK arrangement
               </label>
               <select
                 name="bhkType"
                 value={formData.bhkType}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-800/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-800 dark:text-white text-sm cursor-pointer"
+                className="w-full px-3.5 py-2.5 bg-white dark:bg-[#0B1220] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1D4ED8] focus:border-[#1D4ED8] text-[#0F1B2D] dark:text-[#F1F5F9] text-sm cursor-pointer"
                 required
               >
                 <option value="">Select BHK Arrangement</option>
@@ -159,12 +159,12 @@ const EditRoom = () => {
             </div>
 
             {/* Monthly Rent */}
-            <div className="space-y-1">
-              <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+            <div className="space-y-1.5">
+              <label className="block text-xs font-semibold text-[#5B6B7F] dark:text-[#94A3B8] uppercase tracking-wider">
                 Monthly Rent (₹)
               </label>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 pointer-events-none">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#5B6B7F] dark:text-[#94A3B8] pointer-events-none">
                   <IndianRupee size={16} />
                 </span>
                 <input
@@ -173,7 +173,7 @@ const EditRoom = () => {
                   value={formData.rent}
                   onChange={handleChange}
                   placeholder="8500"
-                  className="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-800/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-800 dark:text-white placeholder-slate-400 text-sm"
+                  className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-[#0B1220] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1D4ED8] focus:border-[#1D4ED8] text-[#0F1B2D] dark:text-[#F1F5F9] placeholder-[#5B6B7F]/60 dark:placeholder-[#94A3B8]/60 text-sm"
                   required
                 />
               </div>
@@ -181,12 +181,12 @@ const EditRoom = () => {
           </div>
 
           {/* Location */}
-          <div className="space-y-1">
-            <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+          <div className="space-y-1.5">
+            <label className="block text-xs font-semibold text-[#5B6B7F] dark:text-[#94A3B8] uppercase tracking-wider">
               Location / Address
             </label>
             <div className="relative">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 pointer-events-none">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#5B6B7F] dark:text-[#94A3B8] pointer-events-none">
                 <MapPin size={16} />
               </span>
               <input
@@ -195,19 +195,19 @@ const EditRoom = () => {
                 value={formData.location}
                 onChange={handleChange}
                 placeholder="e.g. Sector 62, Noida, UP"
-                className="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-800/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-800 dark:text-white placeholder-slate-400 text-sm"
+                className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-[#0B1220] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1D4ED8] focus:border-[#1D4ED8] text-[#0F1B2D] dark:text-[#F1F5F9] placeholder-[#5B6B7F]/60 dark:placeholder-[#94A3B8]/60 text-sm"
                 required
               />
             </div>
           </div>
 
           {/* Image URL */}
-          <div className="space-y-1">
-            <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+          <div className="space-y-1.5">
+            <label className="block text-xs font-semibold text-[#5B6B7F] dark:text-[#94A3B8] uppercase tracking-wider">
               Property Image URL
             </label>
             <div className="relative">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 pointer-events-none">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#5B6B7F] dark:text-[#94A3B8] pointer-events-none">
                 <Image size={16} />
               </span>
               <input
@@ -216,19 +216,19 @@ const EditRoom = () => {
                 value={formData.imageUrl}
                 onChange={handleChange}
                 placeholder="e.g. https://images.unsplash.com/photo-..."
-                className="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-800/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-800 dark:text-white placeholder-slate-400 text-sm"
+                className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-[#0B1220] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1D4ED8] focus:border-[#1D4ED8] text-[#0F1B2D] dark:text-[#F1F5F9] placeholder-[#5B6B7F]/60 dark:placeholder-[#94A3B8]/60 text-sm"
                 required
               />
             </div>
           </div>
 
           {/* Description */}
-          <div className="space-y-1">
-            <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+          <div className="space-y-1.5">
+            <label className="block text-xs font-semibold text-[#5B6B7F] dark:text-[#94A3B8] uppercase tracking-wider">
               Description / Notes
             </label>
             <div className="relative">
-              <span className="absolute top-3 left-3 text-slate-400 pointer-events-none">
+              <span className="absolute top-3 left-3.5 text-[#5B6B7F] dark:text-[#94A3B8] pointer-events-none">
                 <FileText size={16} />
               </span>
               <textarea
@@ -237,21 +237,21 @@ const EditRoom = () => {
                 onChange={handleChange}
                 placeholder="Details about power backup, wifi, water facility, security deposit..."
                 rows="4"
-                className="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-800/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-800 dark:text-white placeholder-slate-400 text-sm"
+                className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-[#0B1220] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1D4ED8] focus:border-[#1D4ED8] text-[#0F1B2D] dark:text-[#F1F5F9] placeholder-[#5B6B7F]/60 dark:placeholder-[#94A3B8]/60 text-sm resize-none"
               />
             </div>
           </div>
 
           {/* Form Actions */}
-          <div className="flex flex-col sm:flex-row gap-3 pt-4">
+          <div className="flex flex-col sm:flex-row gap-3 pt-2">
             <button
               type="submit"
               disabled={submitting}
-              className="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-emerald-500/10 flex items-center justify-center gap-1.5 text-sm disabled:opacity-50"
+              className="flex-1 h-11 bg-[#1D4ED8] hover:bg-[#1E40AF] text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 text-sm disabled:opacity-50 cursor-pointer"
             >
               {submitting ? (
                 <>
-                  <Loader2 size={16} className="animate-spin" />
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   <span>Saving Updates...</span>
                 </>
               ) : (
@@ -264,7 +264,7 @@ const EditRoom = () => {
             <button
               type="button"
               onClick={() => navigate("/my-rooms")}
-              className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold rounded-xl transition-all duration-200 text-sm flex items-center justify-center gap-1.5"
+              className="flex-1 h-11 bg-white dark:bg-[#111A2B] hover:bg-[#F5F8FA] dark:hover:bg-[#1F2A3D] border border-[#E3E8EE] dark:border-[#1F2A3D] text-[#0F1B2D] dark:text-[#F1F5F9] font-medium rounded-lg transition-colors text-sm flex items-center justify-center gap-2 cursor-pointer"
             >
               <X size={16} />
               <span>Cancel</span>

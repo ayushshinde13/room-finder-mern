@@ -9,14 +9,14 @@ const DarkToggle = () => {
     <button
       onClick={toggleTheme}
       type="button"
-      className="p-2 rounded-full border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm"
+      className="p-2 rounded-lg border border-[#E3E8EE] dark:border-[#1F2A3D] bg-white dark:bg-[#111A2B] text-[#5B6B7F] hover:text-[#0F1B2D] dark:text-[#94A3B8] dark:hover:text-[#F1F5F9] hover:bg-[#F5F8FA] dark:hover:bg-[#162035] transition-colors duration-150 cursor-pointer"
       aria-label={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
       title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
     >
       {isDark ? (
-        <Sun size={18} className="text-amber-400 animate-spin-slow transition-transform" />
+        <Sun size={17} strokeWidth={1.75} />
       ) : (
-        <Moon size={18} className="text-slate-700 transition-transform" />
+        <Moon size={17} strokeWidth={1.75} />
       )}
     </button>
   );

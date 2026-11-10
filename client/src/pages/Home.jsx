@@ -1,289 +1,308 @@
-import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-import { Link } from "react-router-dom";
 import { 
   ShieldCheck, 
   Users, 
   DollarSign, 
   ArrowRight, 
   Search, 
-  Building, 
+  MapPin, 
+  Bed, 
   CheckCircle2,
-  Sparkles
+  FileCheck
 } from "lucide-react";
+import Button from "../components/ui/Button";
+import Card from "../components/ui/Card";
+import Badge from "../components/ui/Badge";
 
 const Home = () => {
   const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  const [searchLocation, setSearchLocation] = useState("");
+  const [searchBhk, setSearchBhk] = useState("");
+  const [searchBudget, setSearchBudget] = useState("");
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    if (searchLocation.trim()) params.append("location", searchLocation.trim());
+    if (searchBhk) params.append("bhkType", searchBhk);
+    if (searchBudget) params.append("maxRent", searchBudget);
+    navigate(`/explore?${params.toString()}`);
+  };
 
   if (loading) {
     return (
-      <div className="min-h-[70vh] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-emerald-500" />
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#1D4ED8] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="relative py-12 md:py-20 overflow-hidden">
+    <div className="space-y-16 sm:space-y-24 py-4 sm:py-8">
       {/* ================= HERO SECTION ================= */}
-      <section className="max-w-7xl mx-auto px-6 text-center md:text-left grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-24 relative z-10">
-        <div className="space-y-6">
-          <motion.div
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.4 }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold"
-          >
-            <Sparkles size={14} className="fill-emerald-500/20 animate-pulse" />
-            <span>Direct booking, no middlemen</span>
-          </motion.div>
-          
-          <motion.h1
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-slate-900 dark:text-white"
-          >
-            Find Verified Rooms
-            <span className="block bg-gradient-to-r from-emerald-500 to-teal-400 bg-clip-text text-transparent mt-2">
-              Without Hidden Fees
-            </span>
-          </motion.h1>
+      <section className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        <div className="lg:col-span-7 space-y-6 text-left">
+          <div className="space-y-3">
+            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-[#0F1B2D] dark:text-[#F1F5F9] leading-tight max-w-xl">
+              Find verified rooms.{" "}
+              <span className="text-[#1D4ED8] dark:text-[#3B82F6]">
+                Pay no brokerage.
+              </span>
+            </h1>
 
-          <motion.p
-            initial={{ y: 15, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="max-w-xl text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed"
-          >
-            RoomFinder connects tenants directly with property owners. Browse listings with verified photos, transparent rental costs, and secure digital booking contracts.
-          </motion.p>
+            <p className="text-base sm:text-lg text-[#5B6B7F] dark:text-[#94A3B8] leading-relaxed max-w-xl">
+              Connect directly with verified property owners. Transparent rental pricing,
+              accurate photos, and secure digital agreements without middleman commissions.
+            </p>
+          </div>
 
-          <motion.div
-            initial={{ y: 15, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start"
+          {/* Quick CTA Links */}
+          <div className="flex flex-wrap items-center gap-4 pt-1">
+            <Link to="/explore">
+              <Button variant="primary" size="md">
+                Browse Available Rooms
+              </Button>
+            </Link>
+            <Link
+              to={user?.role === "OWNER" ? "/add-room" : "/register"}
+              className="text-sm font-medium text-[#1D4ED8] dark:text-[#3B82F6] hover:underline inline-flex items-center gap-1"
+            >
+              <span>List your property</span>
+              <ArrowRight size={15} strokeWidth={1.75} />
+            </Link>
+          </div>
+
+          {/* Real Search Bar */}
+          <form
+            onSubmit={handleSearch}
+            className="mt-6 p-3 sm:p-4 bg-white dark:bg-[#111A2B] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.04)] grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-7 gap-3 max-w-2xl"
           >
-            {!user ? (
-              <>
-                <Link
-                  to="/login"
-                  className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-xl font-semibold shadow-lg shadow-emerald-500/10 flex items-center justify-center gap-2 transition-all duration-200 text-sm group"
-                >
-                  Get Started <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                </Link>
-                <Link
-                  to="/register"
-                  className="px-6 py-3 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-800/80 rounded-xl font-semibold transition-colors text-sm flex items-center justify-center"
-                >
-                  Create Account
-                </Link>
-              </>
-            ) : (
-              <div className="flex flex-col gap-4 text-left bg-white/40 dark:bg-slate-900/40 p-6 rounded-2xl border border-slate-200/30 dark:border-slate-800/30 backdrop-blur-sm max-w-md w-full">
-                <div>
-                  <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                    <CheckCircle2 size={18} className="text-emerald-500" />
-                    Welcome Back, {user.name}!
-                  </h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                    Manage your account details and rooms right from your dashboard.
-                  </p>
-                </div>
-                <Link
-                  to={user.role === 'RENTER' ? '/explore' : '/my-rooms'}
-                  className="px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-xl font-semibold text-center text-sm shadow-md transition-all duration-200 flex items-center justify-center gap-1.5"
-                >
-                  {user.role === 'RENTER' ? (
-                    <>
-                      <Search size={16} /> Explore Listings
-                    </>
-                  ) : (
-                    <>
-                      <Building size={16} /> Manage Rooms
-                    </>
-                  )}
-                </Link>
+            {/* Location */}
+            <div className="sm:col-span-1 lg:col-span-3 space-y-1">
+              <label className="block text-[11px] font-semibold text-[#5B6B7F] dark:text-[#94A3B8] uppercase tracking-wider">
+                Location
+              </label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 pl-2.5 flex items-center text-[#5B6B7F] dark:text-[#94A3B8] pointer-events-none">
+                  <MapPin size={15} strokeWidth={1.75} />
+                </span>
+                <input
+                  type="text"
+                  placeholder="City or area (e.g. Indiranagar)"
+                  value={searchLocation}
+                  onChange={(e) => setSearchLocation(e.target.value)}
+                  className="w-full h-10 pl-8 pr-3 text-xs bg-[#F5F8FA] dark:bg-[#0B1220] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-lg text-[#0F1B2D] dark:text-[#F1F5F9] focus:outline-none focus:ring-2 focus:ring-[#1D4ED8]/20 focus:border-[#1D4ED8]"
+                />
               </div>
-            )}
-          </motion.div>
+            </div>
+
+            {/* Room Type */}
+            <div className="sm:col-span-1 lg:col-span-2 space-y-1">
+              <label className="block text-[11px] font-semibold text-[#5B6B7F] dark:text-[#94A3B8] uppercase tracking-wider">
+                Type
+              </label>
+              <select
+                value={searchBhk}
+                onChange={(e) => setSearchBhk(e.target.value)}
+                className="w-full h-10 px-3 text-xs bg-[#F5F8FA] dark:bg-[#0B1220] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-lg text-[#0F1B2D] dark:text-[#F1F5F9] focus:outline-none focus:ring-2 focus:ring-[#1D4ED8]/20 focus:border-[#1D4ED8] cursor-pointer"
+              >
+                <option value="">All Units</option>
+                <option value="1BHK">1 BHK</option>
+                <option value="2BHK">2 BHK</option>
+                <option value="3BHK">3 BHK</option>
+              </select>
+            </div>
+
+            {/* Search Button */}
+            <div className="sm:col-span-1 lg:col-span-2 flex items-end">
+              <button
+                type="submit"
+                className="w-full h-10 bg-[#1D4ED8] hover:bg-[#1E40AF] dark:bg-[#3B82F6] dark:hover:bg-[#2563EB] text-white text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <Search size={14} strokeWidth={1.75} />
+                <span>Search</span>
+              </button>
+            </div>
+          </form>
         </div>
 
-        {/* Hero Dashboard Preview (Visual representation of SaaS layout) */}
-        <motion.div
-          initial={{ opacity: 0, x: 50, scale: 0.95 }}
-          animate={{ opacity: 1, x: 0, scale: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-          className="hidden lg:block relative"
-        >
-          <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/20 to-teal-500/20 rounded-3xl blur-3xl opacity-30 -z-10" />
-          <div className="glass-panel rounded-3xl p-6 shadow-2xl border border-slate-200/50 dark:border-slate-800/50 relative overflow-hidden">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-200/50 dark:border-slate-800/50 mb-6">
-              <div className="flex items-center gap-2">
-                <span className="w-3 h-3 bg-red-400 rounded-full" />
-                <span className="w-3 h-3 bg-yellow-400 rounded-full" />
-                <span className="w-3 h-3 bg-green-400 rounded-full" />
-              </div>
-              <span className="text-xs text-slate-400 font-mono">dashboard_preview.tsx</span>
-            </div>
-            
-            {/* Top 3 Room Category Previews (Images with labels, no numbers) */}
-            <div className="grid grid-cols-3 gap-3 mb-5">
-              <div className="relative h-24 rounded-2xl overflow-hidden group border border-slate-200/40 dark:border-slate-800/60 shadow-sm">
-                <img
-                  src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80"
-                  alt="Studio Room"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent flex items-end p-2.5">
-                  <span className="text-[11px] font-semibold text-white drop-shadow-sm">Studio</span>
-                </div>
-              </div>
-              <div className="relative h-24 rounded-2xl overflow-hidden group border border-slate-200/40 dark:border-slate-800/60 shadow-sm">
-                <img
-                  src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400&q=80"
-                  alt="1 BHK Flat"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent flex items-end p-2.5">
-                  <span className="text-[11px] font-semibold text-white drop-shadow-sm">1 BHK Flat</span>
-                </div>
-              </div>
-              <div className="relative h-24 rounded-2xl overflow-hidden group border border-slate-200/40 dark:border-slate-800/60 shadow-sm">
-                <img
-                  src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=400&q=80"
-                  alt="Luxury Suite"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent flex items-end p-2.5">
-                  <span className="text-[11px] font-semibold text-white drop-shadow-sm">Luxury Suite</span>
-                </div>
-              </div>
+        {/* Hero Visual: Real Property Image & Verified Card */}
+        <div className="lg:col-span-5 relative">
+          <div className="relative rounded-xl overflow-hidden border border-[#E3E8EE] dark:border-[#1F2A3D] shadow-[0_1px_2px_rgba(0,0,0,0.04)] aspect-[4/3] bg-[#F5F8FA] dark:bg-[#111A2B]">
+            <img
+              src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80"
+              alt="Verified studio apartment"
+              className="w-full h-full object-cover"
+            />
+            {/* Top Verified Tag */}
+            <div className="absolute top-3 left-3">
+              <Badge variant="verified" size="sm">
+                <CheckCircle2 size={12} strokeWidth={2} />
+                <span>Verified Listing</span>
+              </Badge>
             </div>
 
-            {/* Room Listing Cards with Preview Images */}
-            <div className="space-y-3">
-              <div className="h-20 bg-slate-100/50 dark:bg-slate-900/50 rounded-2xl border border-slate-200/40 dark:border-slate-800/40 p-2.5 flex gap-3 items-center hover:border-emerald-500/30 transition-colors">
-                <img
-                  src="https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=300&q=80"
-                  alt="Furnished Studio"
-                  className="w-16 h-16 rounded-xl object-cover shrink-0"
-                />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <span className="text-xs font-semibold text-slate-800 dark:text-slate-100 truncate">
-                      Furnished Studio in Indiranagar
-                    </span>
-                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0">
-                      Verified
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                    Direct Owner • Zero Brokerage
+            {/* Bottom Card Summary */}
+            <div className="absolute bottom-3 left-3 right-3 p-3 bg-white/95 dark:bg-[#111A2B]/95 border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-lg text-left shadow-sm">
+              <div className="flex items-center justify-between gap-2">
+                <div>
+                  <h3 className="text-xs font-bold text-[#0F1B2D] dark:text-[#F1F5F9] truncate">
+                    Furnished Studio Apartment
+                  </h3>
+                  <p className="text-[11px] text-[#5B6B7F] dark:text-[#94A3B8] flex items-center gap-1 mt-0.5">
+                    <MapPin size={11} strokeWidth={1.75} />
+                    <span>Indiranagar • Direct Owner</span>
                   </p>
                 </div>
-              </div>
-
-              <div className="h-20 bg-slate-100/50 dark:bg-slate-900/50 rounded-2xl border border-slate-200/40 dark:border-slate-800/40 p-2.5 flex gap-3 items-center hover:border-emerald-500/30 transition-colors">
-                <img
-                  src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=300&q=80"
-                  alt="Spacious 2BHK"
-                  className="w-16 h-16 rounded-xl object-cover shrink-0"
-                />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <span className="text-xs font-semibold text-slate-800 dark:text-slate-100 truncate">
-                      Spacious 2BHK Apartment
-                    </span>
-                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0">
-                      Verified
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                    Koramangala • Ready to Move
-                  </p>
+                <div className="text-right shrink-0">
+                  <span className="text-xs font-bold text-[#0F1B2D] dark:text-[#F1F5F9] block">
+                    ₹12,000
+                  </span>
+                  <span className="text-[10px] text-[#5B6B7F] dark:text-[#94A3B8] block">/ month</span>
                 </div>
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* ================= PLATFORM HIGHLIGHTS ================= */}
-      <section className="max-w-7xl mx-auto px-6 mb-24 relative z-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 p-8 glass-panel rounded-3xl border border-slate-200/50 dark:border-slate-800/50 text-center">
-          <div>
-            <span className="text-lg md:text-xl font-bold text-slate-900 dark:text-white block">Trusted Community</span>
-            <span className="text-xs text-slate-500 dark:text-slate-400 block mt-1 font-medium">Renters & Roommates</span>
+      <section className="border-y border-[#E3E8EE] dark:border-[#1F2A3D] py-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-left">
+          <div className="space-y-1">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#1D4ED8] dark:text-[#3B82F6]">
+              Zero Brokerage
+            </span>
+            <h3 className="text-sm font-bold text-[#0F1B2D] dark:text-[#F1F5F9]">
+              No Middleman Fees
+            </h3>
+            <p className="text-xs text-[#5B6B7F] dark:text-[#94A3B8] leading-relaxed">
+              Every room is listed directly by the property owner. You pay zero commissions.
+            </p>
           </div>
-          <div>
-            <span className="text-lg md:text-xl font-bold text-slate-900 dark:text-white block">Verified Owners</span>
-            <span className="text-xs text-slate-500 dark:text-slate-400 block mt-1 font-medium">Direct Property Listings</span>
+
+          <div className="space-y-1">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#0F766E] dark:text-[#14B8A6]">
+              Verified Listings
+            </span>
+            <h3 className="text-sm font-bold text-[#0F1B2D] dark:text-[#F1F5F9]">
+              Authentic Photographs
+            </h3>
+            <p className="text-xs text-[#5B6B7F] dark:text-[#94A3B8] leading-relaxed">
+              All listings include genuine unit photos, confirmed addresses, and verified landlords.
+            </p>
           </div>
-          <div>
-            <span className="text-lg md:text-xl font-bold text-emerald-500 dark:text-emerald-400 block">Zero Brokerage</span>
-            <span className="text-xs text-slate-500 dark:text-slate-400 block mt-1 font-medium">No Hidden Middleman Fees</span>
+
+          <div className="space-y-1">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#1D4ED8] dark:text-[#3B82F6]">
+              Direct Contact
+            </span>
+            <h3 className="text-sm font-bold text-[#0F1B2D] dark:text-[#F1F5F9]">
+              Direct Negotiations
+            </h3>
+            <p className="text-xs text-[#5B6B7F] dark:text-[#94A3B8] leading-relaxed">
+              Communicate directly with landlords to review tenancy terms and schedule visits.
+            </p>
           </div>
-          <div>
-            <span className="text-lg md:text-xl font-bold text-slate-900 dark:text-white block">Instant Booking</span>
-            <span className="text-xs text-slate-500 dark:text-slate-400 block mt-1 font-medium">Secure Digital Process</span>
+
+          <div className="space-y-1">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#0F766E] dark:text-[#14B8A6]">
+              Digital Proof
+            </span>
+            <h3 className="text-sm font-bold text-[#0F1B2D] dark:text-[#F1F5F9]">
+              Official Invoices
+            </h3>
+            <p className="text-xs text-[#5B6B7F] dark:text-[#94A3B8] leading-relaxed">
+              Automated payment receipts and settlement records for rent and deposits.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* ================= FEATURES SECTION ================= */}
-      <section className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="text-center max-w-xl mx-auto mb-16">
-          <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
-            Designed for Modern Living
+      {/* ================= THREE PILLARS SECTION ================= */}
+      <section className="space-y-8 text-left">
+        <div className="max-w-xl space-y-2">
+          <h2 className="text-2xl font-bold tracking-tight text-[#0F1B2D] dark:text-[#F1F5F9]">
+            A transparent renting standard
           </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
-            Explore features built to make the booking process transparent, efficient, and simple.
+          <p className="text-sm text-[#5B6B7F] dark:text-[#94A3B8] leading-relaxed">
+            Built from the ground up to solve common rental challenges: hidden charges,
+            unverified listing information, and complicated vacate procedures.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            {
-              icon: <ShieldCheck className="w-6 h-6 text-emerald-500" />,
-              title: "Verified Listings",
-              desc: "Every listed apartment is vetted for visual accuracy and ownership legitimacy before going public.",
-            },
-            {
-              icon: <Users className="w-6 h-6 text-emerald-500" />,
-              title: "Direct Owner Contact",
-              desc: "Renters negotiate directly with owners, bypassing middle-men to save thousands on setup.",
-            },
-            {
-              icon: <DollarSign className="w-6 h-6 text-emerald-500" />,
-              title: "Transparent Pricing",
-              desc: "Zero hidden subscription fees, lock-in rates, or additional broker margins. What you view is what you pay.",
-            },
-          ].map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ y: 20, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.15 }}
-              className="glass-panel p-8 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200/50 dark:border-slate-800/50"
-            >
-              <div className="p-3 bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-500 rounded-2xl w-fit mb-6">
-                {item.icon}
-              </div>
-              <h3 className="text-lg font-bold mb-3 text-slate-900 dark:text-white">
-                {item.title}
-              </h3>
-              <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                {item.desc}
-              </p>
-            </motion.div>
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card padding="p-6" className="space-y-3">
+            <div className="w-10 h-10 rounded-lg bg-[#F5F8FA] dark:bg-[#162035] border border-[#E3E8EE] dark:border-[#1F2A3D] text-[#1D4ED8] dark:text-[#3B82F6] flex items-center justify-center">
+              <DollarSign size={20} strokeWidth={1.75} />
+            </div>
+            <h3 className="text-base font-bold text-[#0F1B2D] dark:text-[#F1F5F9]">
+              Transparent Pricing
+            </h3>
+            <p className="text-xs text-[#5B6B7F] dark:text-[#94A3B8] leading-relaxed">
+              What you see is what you pay. Monthly rent rates are fixed, transparent,
+              and agreed upon directly with the property owner.
+            </p>
+          </Card>
+
+          <Card padding="p-6" className="space-y-3">
+            <div className="w-10 h-10 rounded-lg bg-[#F5F8FA] dark:bg-[#162035] border border-[#E3E8EE] dark:border-[#1F2A3D] text-[#0F766E] dark:text-[#14B8A6] flex items-center justify-center">
+              <Users size={20} strokeWidth={1.75} />
+            </div>
+            <h3 className="text-base font-bold text-[#0F1B2D] dark:text-[#F1F5F9]">
+              Direct Owner Relationships
+            </h3>
+            <p className="text-xs text-[#5B6B7F] dark:text-[#94A3B8] leading-relaxed">
+              Skip agency bureaucracy. Speak directly with landlords about terms,
+              amenities, check-in schedules, and house rules.
+            </p>
+          </Card>
+
+          <Card padding="p-6" className="space-y-3">
+            <div className="w-10 h-10 rounded-lg bg-[#F5F8FA] dark:bg-[#162035] border border-[#E3E8EE] dark:border-[#1F2A3D] text-[#1D4ED8] dark:text-[#3B82F6] flex items-center justify-center">
+              <FileCheck size={20} strokeWidth={1.75} />
+            </div>
+            <h3 className="text-base font-bold text-[#0F1B2D] dark:text-[#F1F5F9]">
+              Structured Settlements
+            </h3>
+            <p className="text-xs text-[#5B6B7F] dark:text-[#94A3B8] leading-relaxed">
+              Clearly defined refund and vacate terms. If you decide to vacate early,
+              refund amounts and retention fees are handled transparently.
+            </p>
+          </Card>
+        </div>
+      </section>
+
+      {/* ================= CALL TO ACTION BANNER ================= */}
+      <section className="p-8 sm:p-12 rounded-xl bg-[#F5F8FA] dark:bg-[#111A2B] border border-[#E3E8EE] dark:border-[#1F2A3D] text-left">
+        <div className="max-w-2xl space-y-4">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0F1B2D] dark:text-[#F1F5F9]">
+            Ready to find your next room?
+          </h2>
+          <p className="text-sm text-[#5B6B7F] dark:text-[#94A3B8] leading-relaxed">
+            Search hundreds of verified listings across major cities. Register in minutes
+            to enquire, book, and receive digital receipts.
+          </p>
+          <div className="pt-2 flex flex-wrap items-center gap-3">
+            <Link to="/explore">
+              <Button variant="primary" size="md">
+                Explore Listings
+              </Button>
+            </Link>
+            <Link to="/register">
+              <Button variant="secondary" size="md">
+                Create Account
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
     </div>
   );
 };
 
-export default Home;
+export default Home;

@@ -1,50 +1,37 @@
-import { motion } from "framer-motion";
+import React from "react";
 import RegisterForm from "../components/auth/RegisterForm";
 import { Link } from "react-router-dom";
-import { Sparkles } from "lucide-react";
 
 const Register = () => {
   return (
-    <div className="min-h-[80vh] flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-md space-y-8 glass-panel p-8 rounded-3xl shadow-xl relative z-10 border border-slate-200/50 dark:border-slate-800/50"
-      >
-        <div className="text-center">
-          <motion.div
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.3 }}
-            className="mx-auto h-12 w-12 rounded-2xl bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-500 flex items-center justify-center mb-4"
-          >
-            <Sparkles size={24} className="fill-emerald-500/10" />
-          </motion.div>
-          
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-            Create an account
-          </h2>
-          <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">
-            Sign up to get started with direct room bookings
+    <div className="min-h-[75vh] flex flex-col items-center justify-center py-10 px-4">
+      <div className="w-full max-w-md bg-white dark:bg-[#111A2B] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.04)] p-6 sm:p-8 space-y-6 text-left">
+        <div className="space-y-1.5">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#1D4ED8] dark:text-[#3B82F6]">
+            Get Started
+          </span>
+          <h1 className="text-2xl font-bold tracking-tight text-[#0F1B2D] dark:text-[#F1F5F9]">
+            Create a RoomFinder account
+          </h1>
+          <p className="text-xs text-[#5B6B7F] dark:text-[#94A3B8]">
+            Sign up to book verified rooms or list properties with zero brokerage.
           </p>
         </div>
 
         <RegisterForm />
 
-        <div className="text-center text-sm text-slate-500 dark:text-slate-400 pt-2">
+        <div className="text-center text-xs text-[#5B6B7F] dark:text-[#94A3B8] pt-2 border-t border-[#E3E8EE] dark:border-[#1F2A3D]">
           Already have an account?{" "}
           <Link
             to="/login"
-            className="font-medium text-emerald-600 hover:text-emerald-500 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors"
+            className="font-medium text-[#1D4ED8] hover:text-[#1E40AF] dark:text-[#3B82F6] dark:hover:text-[#2563EB] hover:underline"
           >
             Sign in
           </Link>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };
 
 export default Register;
-
