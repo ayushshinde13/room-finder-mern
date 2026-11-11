@@ -1,12 +1,11 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React from "react";
+import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { 
   ShieldCheck, 
   Users, 
   DollarSign, 
   ArrowRight, 
-  Search, 
   MapPin, 
   Bed, 
   CheckCircle2,
@@ -18,20 +17,6 @@ import Badge from "../components/ui/Badge";
 
 const Home = () => {
   const { user, loading } = useAuth();
-  const navigate = useNavigate();
-
-  const [searchLocation, setSearchLocation] = useState("");
-  const [searchBhk, setSearchBhk] = useState("");
-  const [searchBudget, setSearchBudget] = useState("");
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    const params = new URLSearchParams();
-    if (searchLocation.trim()) params.append("location", searchLocation.trim());
-    if (searchBhk) params.append("bhkType", searchBhk);
-    if (searchBudget) params.append("maxRent", searchBudget);
-    navigate(`/explore?${params.toString()}`);
-  };
 
   if (loading) {
     return (
@@ -75,59 +60,6 @@ const Home = () => {
               <ArrowRight size={15} strokeWidth={1.75} />
             </Link>
           </div>
-
-          {/* Real Search Bar */}
-          <form
-            onSubmit={handleSearch}
-            className="mt-6 p-3 sm:p-4 bg-white dark:bg-[#111A2B] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.04)] grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-7 gap-3 max-w-2xl"
-          >
-            {/* Location */}
-            <div className="sm:col-span-1 lg:col-span-3 space-y-1">
-              <label className="block text-[11px] font-semibold text-[#5B6B7F] dark:text-[#94A3B8] uppercase tracking-wider">
-                Location
-              </label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-2.5 flex items-center text-[#5B6B7F] dark:text-[#94A3B8] pointer-events-none">
-                  <MapPin size={15} strokeWidth={1.75} />
-                </span>
-                <input
-                  type="text"
-                  placeholder="City or area (e.g. Indiranagar)"
-                  value={searchLocation}
-                  onChange={(e) => setSearchLocation(e.target.value)}
-                  className="w-full h-10 pl-8 pr-3 text-xs bg-[#F5F8FA] dark:bg-[#0B1220] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-lg text-[#0F1B2D] dark:text-[#F1F5F9] focus:outline-none focus:ring-2 focus:ring-[#1D4ED8]/20 focus:border-[#1D4ED8]"
-                />
-              </div>
-            </div>
-
-            {/* Room Type */}
-            <div className="sm:col-span-1 lg:col-span-2 space-y-1">
-              <label className="block text-[11px] font-semibold text-[#5B6B7F] dark:text-[#94A3B8] uppercase tracking-wider">
-                Type
-              </label>
-              <select
-                value={searchBhk}
-                onChange={(e) => setSearchBhk(e.target.value)}
-                className="w-full h-10 px-3 text-xs bg-[#F5F8FA] dark:bg-[#0B1220] border border-[#E3E8EE] dark:border-[#1F2A3D] rounded-lg text-[#0F1B2D] dark:text-[#F1F5F9] focus:outline-none focus:ring-2 focus:ring-[#1D4ED8]/20 focus:border-[#1D4ED8] cursor-pointer"
-              >
-                <option value="">All Units</option>
-                <option value="1BHK">1 BHK</option>
-                <option value="2BHK">2 BHK</option>
-                <option value="3BHK">3 BHK</option>
-              </select>
-            </div>
-
-            {/* Search Button */}
-            <div className="sm:col-span-1 lg:col-span-2 flex items-end">
-              <button
-                type="submit"
-                className="w-full h-10 bg-[#1D4ED8] hover:bg-[#1E40AF] dark:bg-[#3B82F6] dark:hover:bg-[#2563EB] text-white text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <Search size={14} strokeWidth={1.75} />
-                <span>Search</span>
-              </button>
-            </div>
-          </form>
         </div>
 
         {/* Hero Visual: Real Property Image & Verified Card */}
